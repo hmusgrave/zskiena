@@ -1,0 +1,60 @@
+1-7
+===
+Note: This algorithm is a bit interesting in that it uses multiply(a,b) in places and ab in others. We'll proceed under the assumption that ab is some sort of God-given instruction and that we want to prove `multiply` correct under the assumption that the other basic arithmetic holds.
+
+Base:
+When z=0 then yz==0 for all y, so the algorithm should return 0. Which it does in step 1.
+
+Induction:
+- Assume multiply(a,b) == ab for all b <= n. Consider multiply(a, n+1).
+- Since n+1 != 0 for any natural n, we skip to step 2. in the algorithm.
+- We can uniquely write n+1 = uc+v for integers u,v with 0 <= v < c. Since
+  n+1 >= 0, c >= 0, and v >= 0, we also know u >= 0.
+- Note that floor((n+1) / c) == u. Assume a proper integer division is performed so that we don't have to worry about floating-point issues.
+- Then multiply(cy, floor((n+1)/c)) is the same as multiply(cy, u).
+- Since c >= 2, u == floor((n+1)/c) is strictly less than n+1. Being an integer this means u <= n. Being non-negative, our base case applies, and we conclude multiply(cy, u) == cyu.
+- Note that (n+1) mod c is exactly equal to v (see our unique decomposition above).
+- So step 2. of the algorithm computes cyu + yv.
+- Re-arrange to see y (cu + v).
+- Recall that n+1 is cu+v by definition, so this is y(n+1).
+QED
+
+1-8
+===
+Base:
+Horner takes in [a0] and x. It sets p := a0, skips the loop (iterating from -1 downward to 0), and returns p. This is exactly the correct result.
+
+Induction:
+- Assume horner(A,x) is correct for all x for all A=[an..a0]. Consider A=[a_(n+1) .. a0].
+- Note that horner([a_(n_1) .. a0], x) has a loop, the first n steps of which are all the
+  computations in horner([a_(n+1) .. a1], x). I.e., before the very last iteration the variable
+  p is equal to a_(n+1) x^n + .. + a_1.
+- Then the final loop iteration computes px+a0 and returns. This is equal to
+       (a_(n+1) x^n + ... + a_1) x + a0.
+    == a_(n+1) x^(n+1) + ... + a_1 x + a0.
+QED
+
+1-9
+===
+For non-empty inputs, decompose bubblesort as follows:
+
+function bubblesort (A: list[1..n])
+  var int i,j
+  i := n
+  for j from 1 to i-1
+    if (A[j] > A[j+1])
+      swap the values of A[j] and A[j+1]
+  bubblesort(A[1..(n-1)])
+
+Base:
+Note that bubblesort leaves empty lists alone. Empty lists are sorted.
+
+Induction:
+We're going to proceed in two parts. First we'll establish that the first chunk of the algorithm moves a maximal element to the far-right of the list (and doesn't clobber other elements), and then we'll use the inductive hypothesis to show that the result is a sorted list.
+
+For the first part, we have a sub-induction step. In the base case, A[1] contains the max element of A[1..1] after 0 steps of the for loop. In the inductive step, suppose A[k] contains the max element of A[1..k] after k-1 steps of the for loop. On the kth step of the for loop (i.e., j == k), the conditional swap will fill the k+1'st slot with the greater of those two elements, and the greater of those two is necessarily the max element of A[1..k+1]. This continues through k-1 == i-1 == n-1 loop iterations, so A[k] contains the max element of A[1..n] (i.e., some maximal element of A).
+
+Since the only mutations are swaps, we never create or destroy entries and always maintain some permutation of the elements of A. After the loop, we have a list with a maximal element at the far-right.
+
+Using the outer inductive hypothesis, bubblesort correctly sorts in-place any list of length up to n-1, so the recursive call at the end sorts the sub-list A[1..(n-1)].
+QED

@@ -1,0 +1,48 @@
+1-19
+====
+(a) I have approximately one bookshelf with 5 shelves, around 50 books per shelf, around 300 pages per book. The product is only 7.5e4 pages, or much less than 1e6.
+
+(b) UND's main library has roughly 3 floors of books. Each floor has books taking up maybe 25% of the available square footage and shelves maybe 8 feet high. Gaps above the books and a few empty shelves might reduce the density of books another 50%. So there are 3 linear feet of books. The library has a much bigger footprint than a large ranch house, probably 300ft in one dimension and 200 in another, so it has 200*600*3=3.6e5 cubic feet of books. My estimates for my own books were around 7.5e4 pages per 15 cubic feet of books, or 5e3 pages per cubic foot. The Chester Fritz then has roughly 1.8e9 pages.
+
+1-20
+====
+Pages have roughly 300 words, and this book has roughly 700 pages, so it has approximately 2.1e5 pages.
+
+1-21
+====
+(a) An hour is around 3.6e3 seconds, so 1e6/3.6e3 is around 1e3/3.6 or around 320 hours per million seconds.
+
+(b) A day is 24h, so eyeballing 320 hours looks like 13 days.
+
+1-22
+====
+Over 60% of the population lives in a small number of major cities. The remaining 40% are roughly 0.4 * 330e6 ~ 132e6 ~ 1.3e8 people. City size is some sort of power-law distribution, so estimating it is hard, but that effect will bias the average city to very small cities and towns in the 1e2-1e3 population range. Dividing the two you get something like 1.3e5-1.3e6 cities and towns. Call it 500k.
+
+Note: Out of personal curiosity I looked this one up after the fact. I was way off. There are only like 20k incorporated communities, and all of the extra little 30-house unincorporated crap doesn't actually move the total anywhere near 500k.
+
+1-23
+====
+Averaged over some length of time, it suffices to look at any cross section of the mississippi that has around the same flow as the delta. Within 100mi you should be able to assume the volume is similar (not too much evaporation and plant absorption, not too many extra streams). I know there are places near the mouth that are around 1mi wide and 10ft deep. The flow rate is more than 3mi/hr because it's difficult to paddle upstream against it. It's less than 10mi/hr because that sort of rate causes wicked eddies and dangerous effects above and beyond what you read about in people floating house-boats down the river and whatnot. Call it 5 mi/hr. Then the flow rate is 10 * 1 * 5 ft mi^2/hr. Add a correction of 24/5280 for units, and round the math a little to get 25/100 = 0.25 cubic miles per day.
+
+1-24
+====
+Disk seek is normally measured in milliseconds, but throughput would tend to make microseconds more useful. Your RAM accesses a word in less than a microsecond even on a cache miss.
+
+(b) Instructions per year are a bit interesting because of pipelining. The phrase "can" suggests a search for an upper bound, so let's assume a typical maximum throughput of 4 of some sort of instruction per core per clock cycle. In a year my CPU can do something like (4.3e9 cycles per second per core) * (8 cores) * (3.6e3 seconds per hour) * (2.4e1 hours per day) * (3.65e2 days per year) * (4 instructions per cycle).
+
+~ 33e9 * ...
+~ 110e12 * ...
+~ 250e13 * ...
+~ 1000e15 * ...
+~ 4e18 instructions per year
+
+1-25
+====
+(a) 100 seconds
+
+(b) c (1000) (3) = 1
+    c = 1/3000
+    (1/3000) * (10000) * 4
+    = 10/3*4
+    = 40/3
+    = 13.33333 seconds

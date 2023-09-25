@@ -1,0 +1,17 @@
+1-1
+===
+This effectively just iterates from i through j and keeps track of the max cycle length. Any elements we find on the way from i to j we keep track of in a rudimentary bitset since they can't contribute to the max cycle length (e.g., 5->16->8->4->2->1 has a cyle length of 6, and all the pit-stops like 16 have lesser lengths).
+
+1-2
+===
+Our solution isn't especially clever, but it avoids floating-point shenanigans. The optimal solution, ignoring discretization, is just the sum of all the differences between elements greater than the mean and the mean. Discretization throws a bit of a wrench, so we split it into two cases.
+
+If the average is an integer number of cents, the constraint that everybody pays with $0.01 of eachother mandates that everyone pay exactly the average, so we can simply compute the sum of differences described above.
+
+If the average is an integer number of cents, everybody must pay either the integer number of cents immediately below or above the average. Any optimal solution brings people below the average up to that lower boundary and people above down to that upper boundary. However, consider a distribution like 4, 6, 6, 6. The average (real number arithmetic) is 5.5, so everybody must pay either 5 or 6 cents. Some percentage of the people above the average (the 6s) will also have to be brought down to below the average for a final distribution like 5, 5, 6, 6. That imbalance is rectified precisely by returning the max of the sum of lower differences or the sum of lower differences. The sum of lower differences in that example is (5-4)=1, and the upper differences is (6-6) + (6-6) + (6-6) = 0. The max of 0 and 1 is 1, so our answer is 1, reflecting the $0.01 that has to move.
+
+1-3
+===
+Australian voting. We didn't do anything special here. Assuming a relatively small ballot it just re-counts a few times till the solution is found. Obvious speedups include keeping track of which ballots actually voted for the loser each round. Ordinarily that percentage should be low, so that should save a lot of work. It makes iteration a lot slower though, so for infrequent recounts and small ballot counts it's probably a loss.
+
+Note that the algorithm described (get rid of everyone with losing vote counts) doesn't necessarily result in a winner being picked. Consider the ballots [1,2] and [2,1]. Nobody exceeded 50%, and everyone has the same losing vote count, so we get rid of all candidates. Maybe the algorithm should throw an error to highlight the special case, but our solution instead picks the first candidate with the losing vote count (you have an edge if you appear later on the ballot), so it's guaranteed to terminate and pick somebody, and nobody more preferred by the australian system will be chosen instead.

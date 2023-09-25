@@ -1,0 +1,29 @@
+1-1
+===
+-2 == (-1) + (-1) < min(-1, -1) == -1
+
+1-2
+===
+-2 == (-1) * (2) < min(-1, 2) == -1
+
+1-3
+===
+Connect a <-> b with road X 1 mi long with a speed of 1 mi/hr and road Y 10 mi long with a speed of 100 mi/hr. Shortest route is X (1 mi), and fastest route is Y (0.1 hr).
+
+1-4
+===
+Connect a <->b with road X 1 mi long (having a turn/intersection in the middle) and a much longer gently curved route Y.
+
+1-5
+===
+(a) 3: 1, 1, 2
+    Optimal solution is {1, 2}, but the left-to-right algorithm selects {1, 1}.
+
+(b) Re-use example (a). Left-to-right ordering is the same as small-to-big ordering.
+
+(c) 4: 3, 2, 2
+    Optimal solution is {2, 2}, but the big-to-small algorithm selects {3}.
+
+1-6
+===
+Choose S1 = {1, 2, 3}, S2 = {4, 5, 6}, and S3 = {2, 3, 4, 5}. S3 adds no additional information and doesn't cover 1 or 6, so you still require S1 and S2 to complete the cover, but S3 is by far the largest subset, so it is selected first.

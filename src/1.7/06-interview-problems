@@ -1,0 +1,53 @@
+1-28
+====
+We're using the power-by-squaring method to compute denom * 2**i for each i in 0..31, and since the base is 2 we can do the squaring simply by addition. Once we have those terms it's easy to find the largest subset of those which sum to at most the numerator. It takes a logarithmic amount of space and time in the bit-count. See 1-28.zig.
+
+1-29
+====
+The problem supposes there exists a fastest horse, so assume no ties.
+
+1. A trivial solution exists by racing 5 horses, then progressively testing the current top 3 against each of the remaining 20 in 10 races. This yields 11 races.
+
+2. You need to race every horse at least once, or you might miss the fastest. Furthermore, this requires at least 5 races, and in just 5 races you can't possibly rank the different cohorts, so you require at least a 6th race as a lower bound.
+
+3. If you race 5 groups of 5 horses and then in the 6th race you race all the winners then you know for certain what 1st place is. You've also eliminated many choices for 2nd and 3rd (anyone slower than the 4th and 5th horses in that race). There aren't many remaining candidates. Consider the following diagram
+
+a1 a2 a3 a4 a5
+b1 b2 b3 b4 b5
+c1 c2 c3 c4 c5
+d1 d2 d3 d4 d5
+e1 e2 e3 e4 e5
+
+Suppose x1, x2, and x3 won the 1st, 2nd, and 3rd places in the x cohort (where x in "abcde"). The 6th race then has an order of
+
+a1 b1 c1 d1 e1
+
+Because of the transitivity of inequalities we know a1 is 1st among all horses, and the entire d and e cohorts aren't in the running. Furthermore, the entire c cohort isn't in the running for 2nd, and none of the c cohort other than c1 is in the running for third. In particular, candidates for the 3 spots at this point are:
+
+(1) a1
+
+(2) a2 b1
+
+(3) a2 a3 b1 b2 c1
+
+A 7th race between a2 a3 b1 b2 and c1 fully resolves the ranking between the top 3 horses. It remains to be shown that 7 is minimal rather than 6, or else that 6 races can suffice. The details look finicky to me (a proof by cases on the number of races the lead horse participated in should suffice), but in any 6 races where you know the lead horse you can't possibly be certain of 2nd place.
+
+1-30
+====
+The majority of piano tuners are probably from people tuning their personal piano 1-2 times every year or four. Around 1% of the world plays piano for any length of time, perhaps half of them having their own personal piano of some quality (as opposed to an electronic keyboard or clavinova). At 4e7 pianos getting tuned on average every 2 yrs you have 2e7 tunings per year. A piano tuning is a skilled event with almost zero marginal cost that takes an hour or three. Professional work pays $100/hr, so a tuning is around $200 (normalized to coastal US markets, but the number of tuners per piano should be roughly constant worldwide), and to have a decent income the tuner would do 500 tunings per year. 2e7/5e2 = 4e4 or 40k piano tuners worldwide.
+
+1-31
+====
+The average gas station in the US makes $0.10/gallon in profit, counting sales from the store itself. The average american gets 25 miles per gallon and drives 12k miles per year, so they use 480 gallons of gas per year, or $48 of profit for the gas station. A gas station needs to at least pay the owner a livable wage, and most of the gas stations are smaller affairs rather than larger truck stops (in fact, we completely ignore trucks for the analysis since there should be comparatively so many fewer truck stops). $50k/yr divided by $48 profit per person per year yields 1000 people to barely support a small gas station. Counting a couple staff and benefits, bump that up to 3k people per gas station. There are 330e6 people in the US, so dividing out we have 110e3 gas stations.
+
+1-32
+====
+Hockey rink ice is 2 inches thick. Water is 1g/mL. Ice is less dense, maybe 0.9g/mL. Let's ignore that conversion for now. A hockey rink is basically a rectangle, maybe 100 ft in one dimension (much smaller than a football field) and 40 ft in the other. The volume of the ice is 8000 ft^2 inches, or roughly 800 ft^3. If water is 1g/cm^3 it's (2.54)^3 g/in^3, or around 10 g/in^3. Or 17000 g/ft^3. That's just 17 kg/ft^3, and round it down to 15 kg/ft^3 for the 90% conversion factor. Multiply by 800 to get 12000 kg, or 12 metric tons.
+
+1-33
+====
+The US is roughly 1500 miles tall and 2500 miles wide. Most of the road miles are in the interior (not in major cities) and have a density of about one per mile. A square grid of that size has ~1500 horizontal lines, each of which are 2500 miles wide, and vice versa for the vertical lines. You get 2 * 1500 * 2500 = 3000 * 2500 = 1000 * 7500 = 7.5 million miles of road.
+
+1-34
+====
+A page has 300 words, or 30 lines. With a book open you have two pages visible, so 60 lines. Phone books have smaller lines than normal by quite a bit, so call it 200 names per two open pages. New York City is smaller than LA. California has 40M people, so LA has 20M. NYC has 16M. Manhattan is a large subset of that, call it 6M. The average household has two people, so 3M households. Most homes don't have landlines anymore, so there are perhaps 500k landlines for the phonebook to index. That leaves 2500 page pairs in the phone book. On average you'd have to open more than 2500 times to find the right combination (accounting for duplicates/...). I don't remember the exact equation (something about approaching e^x), but it's less than a 2x factor. Call it 3500 random opens on average.

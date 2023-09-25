@@ -1,0 +1,9 @@
+1-26
+====
+Look at 1-26.zig for some code. A hypothetical better heuristic might be to start with a solution and iteratively add the point which increases distance the least (splitting the edge which would cause the least increase in distance).
+
+1-27
+====
+A given set of tickets establishes sufficient coverage if all 1365 choices of 4 winning numbers have a 3-subset represented in one of the sets. Brute-force search should suffice.
+
+See 1-27.zig for some code. Since we have a 5-set solution for some set of numbers, any other set can be viewed as just a renaming of that initial set.
