@@ -1,0 +1,179 @@
+2-43
+====
+You can accumulate results in a buffer (or yield them) in a single pass. If the remaining elements when appended to the buffer would yield the k desired elements then finish by yielding all of those. If there aren't enough remaining elements then you had an invalid input. If there are more than enough remaining elements then select the next element with probability (remaining_required_selections) / (remaining_elements).
+
+If n is unknown you require Ω(k) space for any algorithm. One strategy maintains a buffer of k potential results. Fill the buffer for the first k items in the stream (if you can't do so then the inputs were invalid), and then for the k+1'st and onward steps we'll mutate that result buffer. The probability that the new element should be in the result (if we were to terminate at precisely n steps) is k/n. If a biased coin says the element should be included with that probability, replace one (uniformly selected) element of the result buffer with the new element. At each step in the algorithm the result buffer is a uniform sampling of the head of the stream to that point.
+
+2-44
+====
+Ignoring the details as to _how_ exactly you accomplish this, store item x on nodes x, x+1, and x+2 (mod 1000). When any two nodes fail there is no data loss.
+
+When three random nodes fail, there is only data loss if they're consecutive. Choose the first node x arbitrarily. Then there is data loss when the next two are at the following positions:
+
+x+1, x+2
+x-1, x+1
+x-2, x-1
+
+There are choose(999, 2) ways for 2 more nodes to fail, and 3 of those result in data loss, so the resulting probability is 3/choose(999, 2) = 6/(99*98) = 1/(33*49) = 1/1617.
+
+No data is lost other than the one entry replicated on those 3 machines, so we expect on average 1/1617 entries to be lost when 3 random nodes fail.
+
+2-45
+====
+At position k there's a 1/k chance the new value is the minimum of the values we've seen so far (assuming a uniform distribution of indices). We perform an assignment precisely when that's the case, so the total number of assignments is some sort of sum (1/k) type thing, which evalutes to θ(log n).
+
+2-46
+====
+With infinitely many marbles you can binary search. When there are n candidate floors you reduce the search space to, in the worst case, floor((n+1)/2) options. Dropping a few marbles, this gives the chain of
+
+100
+50
+25
+13
+7
+4
+2
+1
+
+for 7 total drops in the worst case.
+
+If you have only two marbles you want to eliminate as many options as possible by the first one that breaks because when you only have one marble and there are n candidate floors you require n-1 drops.
+
+Our strategy is going to be to drop the first marble from increasing heights till it breaks, then drop the second marble from the first floor where it might break till the last floor before the first marble broke. Any other strategy wastes drops, and the only question is given that the first marble did not break at floor k, which floor f(k) should we try next?
+
+There's an associated cost model c(k) stating how many drops we require in the worst-case if we know floors k.100 are options and have our first marble available to throw.
+
+c(100) = 0
+c(99) = 1
+c(98) = 2
+
+If we're considering k.100 and which floor j to throw the first marble from, our costs are:
+
+(a) If the marble breaks, 1 for the throw, and then (j-k) consecutive throws to test floors k..j-1. This totals to 1+j-k
+
+(b) If the marble does not break, 1 for the throw and then c(j+1) for the remaining floors.
+
+We can't choose whether it breaks or not, so we end up with 1+max(c(j+1), j-k). Then the optimal j is the one minimizing that cost function. Dynamically building that up from k=100 down to k=1 we compute c(1), our solution.
+
+We could compute that by hand if we wanted, but a bit of code establishes 14 throws in the worst-case. Our hop schedule (assuming the first throw doesn't break) is:
+
+8
+21
+33
+44
+54
+63
+71
+78
+84
+89
+93
+96
+98
+99
+
+2-47
+====
+Weigh one coin from one bag, two from the next, and so on (all at once in one pile). If all were gold the expected weight would be 550 grams, but instead you'll be short by 10*k grams for some k in [1,10]. That k is the index of your bag of false coins.
+
+2-48
+====
+Weigh 3 vs 3 balls. If they're the same then the heavier ball is in the other 2 and can be isolated in one weighing. If they're different the one bunch of 3 is heavier, and that contains the offending ball. Balance 2 of the balls from that heavier bunch. If they're the same, the 3rd is the culprit, and otherwise it's the heaviest of the two you're currently balancing.
+
+2-49
+====
+We're taking a lot of liberty with "eventually merge," but assume this means that you have a tree of pairwise merges, that the merge events are serialized in time, and that the relative timings matter. Let M(n) denote the function outputting the answer.
+
+If we have 1 company, there is 1 way for merges to happen, so M(1) = 1.
+
+If we have n companies, there are choose(n, 2) ways for the first merge to happen and then M(n-1) ways to merge the resulting conglomerates, so M(n) = choose(n, 2) M(n-1).
+
+Simplifying this, I hope, M(n) = n * (n-1) * M(n-1) / 2. Let's pull out the 2^(n-1) factor to just consider M(n) = n * (n-1) * M(n-1). Luckily the whole thing is multiplicative and telescopes a bit, so this unpackes to
+  M(n)
+= n * (n-1)^2 * (n-2)^2 * ... * 2 * M(2)
+= n * (n-1)^2 * (n-2)^2 * ... * 2^2 * 1 * M(1)
+= n * ((n-1)!)^2
+
+Throwing the power of 2 back in we find M(n) = n * ((n-1)!)^2 / 2^(n-1), which happily works for the base case as well.
+
+2-50
+====
+This is fairly straightforward. Generate all the cubes whose cube-roots are integers less than n. Create a hash table to store any sums we've seen, and a hash set to store any answers. For each distinct pair of cubes, if their sum is in the table then add it to the result set, and then add it to the table.
+
+2-51
+====
+If there's one pirate, he proposes that he keeps all the money, and he stays alive and keeps the money.
+
+If there are two pirates, the senior one proposes he keeps all the dollars, because when the vote happens he commands at least half of it, so the junior pirate can't fight it. The 2nd pirate stays alive.
+
+If there are three pirates, if he proposes any number of dollars to go to the junior-most pirate then the junior-most pirate will accept because otherwise he gets zero dollars. He also votes for himself, so the 2nd-junior pirate's vote doesn't matter. He proposes $299.99 for himself and $0.01 for the junior pirate. He stays alive.
+
+If there are four pirates, the least he can pay to sway one other pirate is to offer $0.01 to the 2nd-junior pirate and keep the $299.99 for himself. Pirates 1,3 vote against him, but this doesn't matter. He stays alive.
+
+If there are five pirates then the current senior pirate must sway at least two other people to vote for him. If it fell back to 4 pirates then the allocation would be [299.99, 0, 0.01, 0], so to persuade two other people to vote for him the least he could pay is an allocation of [299.98, 0, 0.01, 0, 0.01]. He stays alive.
+
+If there are six pirates then the senior pirate also needs to sway two other crew. He proposes an allocation of [299.98, 0, 0.01, 0, 0.01, 0]. He stays alive.
+
+2-51 (alt)
+==========
+Suppose pirates are malicious and that pirates can't vote on their own proposal.
+
+If there's one pirate he wins.
+
+If there are two, the junior pirate kills the senior pirate.
+
+If there are three, the mid-pirate votes for the plan regardless so as to not die, and the junior pirate votes to kill regardless to acquire the money. Since 50% of the votes agree, the senior pirate allocates [300, 0, 0].
+
+If there are four, the 2nd-in-command votes to kill regardless, as do any pirates receiving $0, so he dies.
+
+If there are five, two votes are required. The current second-in-command agrees with any plan in order to survive, as do either of the two lower pirates if bribed with a penny. The allocation is [299.99, 0, 0, 0.01, 0] or [299.99, 0, 0, 0, 0.01].
+
+If there are six, three votes are required. Any of the lowest 4 pirates can be bribed for a penny (since a guaranteed penny is better than a chance at one), and he does so with an allocation of [$299.97, 0, x, x, x, x] where 3 of the 4 lowest pirates each get a penny.
+
+2-52
+====
+If there's one pirate he keeps the money and survives.
+
+If there are two pirates, the allocation is [1, 0], and he survives.
+
+If there are three pirates, assuming no maliciousness from pirate #2, the current senior pirate only needs to persuade one of the remaining two to vote, so he allocates 0 to himself and 1 elsewhere.
+
+If there are four pirates, similarly you can always steal a vote by allocating 0 to yourself and 1 elsewhere.
+
+If there are five pirates, you need two votes to not die. This is problematic because three pirates have a chance to gain if you die, and you can only persuade one of them. However the next-current-senior pirate receives 0 either way and doesn't die either way, so being un-malicious he will also vote in your favor. You allocate [0, 0, x, x, x] so that one of the 3 junior-most pirates gets the dollar. The other two junior pirates vote against you.
+
+If there are six pirates, you similarly need two votes not to die. The 2nd and 3rd most senior pirates, not being malicious, vote for you regardless of your plan because they aren't at risk and don't stand to gain anything by voting differently. You allocate $1 to yourself and $0 to everyone else. The three junior-most pirates vote against you, but that doesn't matter.
+
+2-52 (alt)
+==========
+Alternatively, suppose that all-else equal the pirates prefer to kill each other.
+
+If there's one pirate he survives at [1].
+
+If there are two pirates, the allocation is [1,0], and he survives.
+
+If there are three pirates, the allocation is [0,0,1], and he survives.
+
+If there are four pirates, the allocation is [0, 0, 1, 0] or [0, 1, 0, 0], and he survives.
+
+If there are five pirates, no matter the allocation he dies because the three of the remaining four getting $0 would prefer to kill him.
+
+If there are six pirates, the 2nd-in-command accepts any plan because he doesn't want to die, the senior pirate votes for himself, and he squeeks by alive by assigning $1 to one of the remaining 4 pirates who have no chance of death but would prefer to maximize wealth.
+
+2-52 (alt 2)
+============
+Suppose that pirates prefer to kill each other and also can't vote on their own proposal.
+
+If there's one pirate he survives at [1].
+
+If there are two pirates, he dies.
+
+If there are three pirates, he survives at [1, 0, 0] because the next pirate doesn't want to die.
+
+If there are four pirates, he dies because he can only persuade one other pirate to vote with the indivisible dollar.
+
+If there are five pirates, he gets an immediate vote from the current 2nd-in-command (to avoid death), and he also gets a vote from one of the two lowest pirates he bribes with the dollar. The allocation is [0, 0, 0, x, x].
+
+If there are six pirates he's in a pickle. He needs 3 votes, but nobody is afraid of death, and he can only bribe one person.
+
+The final allocation is that the senior pirate dies, and one of the two junior-most pirates gets the dollar.

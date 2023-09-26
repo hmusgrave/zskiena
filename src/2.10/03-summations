@@ -1,0 +1,76 @@
+2-32
+====
+The details are a bit fiddly to do it this way, but note the suspicious k(k+1)/2 result. The difference of consecutive squares n^2 and (n+1)^2 is 2n+1, which you can decompose into n and n+1. The alternating nature of this allows you to decompose the negative turns into -1-2-...-a and the positive ones into 1+2+...+b, where the exact a,b endpoints depend on whether you end positively or negatively. The (-1)^z factor just selects for positivity or negativity.
+
+In any event though, note the assertion is trivially true for k=1. Inductively, consider
+  S(k+1)
+= S(k) + (-1)^k (k+1)^2
+= (-1)^(k-1) k (k+1) / 2
+= (-1)^k (k+1) (-k/2 + k+1)
+= (-1)^k (k+1) (k+2) / 2
+QED
+
+2-33
+====
+f(0, i) = i==0
+f(n, i) = f(n-1,i-1) + f(n-1,i) + f(n-1,i+1)
+
+Let g(n) = sum_{i=-n}^n f(n, i). Then g(0) = 1. For n>0:
+
+  g(n)
+= sum_{i=-n}^n f(n, i)
+= sum_{i=-n}^n f(n-1, i-1) + f(n-1, i) + f(n-1, i+1)
+=   f(n-1, -n-1) + f(n-1, -n) + g(n-1)
+  + f(n-1, -n) + f(n-1, n) + g(n-1)
+  + f(n-1, n) + f(n-1, n+1) + g(n-1)
+= 3g(n-1) + f(n-1, -n-1) + f(n-1, n+1) + 2(f(n-1, -n) + f(n-1, n))
+
+Note that it's trivial to prove via induction that f(n-1, -n-1) = f(n-1, n+1) = f(n-1, -n) = f(n-1, n) = 0. Therefore g(n) simply satisfies:
+
+g(0) = 1
+g(n) = 3 g(n-1)
+
+This is g(n) = 3^n by definition.
+QED
+
+2-34
+====
+n(n+1)/2
+
+2-35
+====
+(a) T(n) = sum_{i=1}^n sum_{j=1}^{2i} 1
+
+(b) T(n)
+= sum_{i=1}^n 2i
+= 2 sum_{i=1}^n i
+= 2 n(n+1)/2
+= n(n+1)
+
+2-36
+====
+(a) T(n) = sum_{i=1}^{n/2} sum_{j=1}^{n-1} sum_{k=1}^j 1
+
+(b) T(n)
+= sum_{i=1}^{n/2} sum_{j=1}^{n-1} j
+= sum_{i=1}^{n/2} (n-1)n/2
+= (n/2) * (n-1) * n / 2
+= n^2 (n-1) / 4
+
+2-37
+====
+Adding two numbers where the largest has d digits is θ(d). The digit count is θ(log(n)/log(b)). The numbers we're adding up are:
+
+x, 2x, 3x, ..., (y-1)x.
+
+The digit counts for each of those are
+
+(1/log(b)) (log(x) + log(x)+log(2) + log(x)+log(3) + ... + log(x)+log(y-1))
+
+Which is θ(ylog(x)/log(b)) + θ(ylog(y)/log(b))
+
+Re-writing slightly, this is θ(y log_b(xy)).
+
+2-38
+====
+It takes θ(n) steps to compute each of the addends. Each of those additions is θ(n), yielding θ(n^2).

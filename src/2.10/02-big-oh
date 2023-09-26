@@ -1,0 +1,292 @@
+2-7
+===
+(a) true
+(b) false
+
+2-8
+===
+(a) f(n) = θ(g(n)). Note that θ(log(n)+5) = θ(log(n)), and θ(log(n^2)) = θ(2log(n)) = θ(log(n)).
+
+(b) f(n) = Ω(g(n)). Consider n = 2^k. Then f(n) = θ(2^k) and g(n) = θ(k).
+
+(c) f(n) = Ω(g(n)). Complexity classes multiply, and when neither argument is constant that pushes them to a new complexity class.
+
+(d) f(n) = Ω(g(n)). Whenever θ(a(n)) < θ(sqrt(b(n))) we also have θ(a^2(n)) < θ(b(n)). Substitute a=log n and b=n, and use similar reasoning to (b).
+
+(e) f(n) = Ω(g(n)). Similar argument to (c).
+
+(f) f(n) = θ(g(n)). These are both constant.
+
+(g) f(n) = Ω(g(n)). Exponentials grow much faster than any polynomial.
+
+(h) f(n) = O(g(n)). For all n we have f <= g, but the ratio between them is (3/2)^n, so no constant multiple of f could possibly exceed g for large enough n.
+
+2-9
+===
+(a) g(n) = O(f(n))
+
+(b) f(n) = O(g(n))
+
+(c) f(n) = O(g(n))
+
+(d) g(n) = O(f(n))
+
+(e) g(n) = O(f(n))
+
+(f) f(n) = O(g(n))
+
+2-10
+====
+First note that n^3 - 3n^2 - n + 1 <= n^3 + 1. For all n >= 1, consider
+   (1/2)(n^3+1)
+ = (1/2)n^3 + 1/2
+<= (1/2)n^3 + (1/2)n^3
+ = n^3
+
+So n^3 - 3n^2 - n + 1 is bounded above in complexity by n^3. Going the other way, for all n>=9 consider
+
+   (1/3)n^3
+ = n^3 - (1/3)n^3 - (1/3)n^3
+<= n^3 - (n/3)n^2 - (n^2/3)n
+<= n^3 - (9/3)n^2 - (81/3)n
+<= n^3 - 3n^2 - 27n
+<= n^3 - 3n^2 - n + 1
+
+Having proven both directions, the two functions must be of the same complexity class.
+QED
+
+2-11
+====
+We'll simply choose c=1 and prove by induction that for n>=4 we have 2^n >= n^2.
+
+In the base case, both functions evaluate to 16 at 4.
+
+Inductively, suppose true for 4 <= k <= n-1. Then
+
+   2^n
+ = 2 * (2^(n-1))
+>= 2 * ((n-1)^2)
+ = 2 * (n^2 - 2n + 1)
+ = 2n^2 - 4n + 2
+ = n^2 + (n^2 - 4n + 2)
+>= n^2 + (4n - 4n + 2)
+ = n^2 + 2
+ > n^2
+QED
+
+2-12
+====
+(a) c = 2/3
+
+(b) c = 1/2
+
+(c) c = 1/4
+
+2-13
+====
+If f1(n) = O(g1(n)) then
+
+(a) there exists a natural number k and a positive real c such that f1(n) <= c g1(n) for all n >= k.
+
+If f2(n) = O(g2(n)) then
+
+(b) there exists a natural number j and a positive real d such that f2(n) <= d g2(n) for all n >= j.
+
+Let L = max(j, k) and e = max(c, d). Then for all n >= L we have
+
+   f1(n) + f2(n)
+<= c g1(n) + d g2(n)
+<= e g1(n) + e g2(n)
+ = e (g1(n) + g2(n))
+QED
+
+2-14
+====
+Note that f(n) = Ω(g(n)) is equivalent to g(n) = O(f(n)). Apply that conversion, apply the proof in 2-13, and reverse the conversion.
+
+2-15
+====
+Ignore the "big-enough n" component of the argument since it's trivial to find an appropriate index. By the hypothesis we have both
+
+(a) f1(n) <= c g1(n), and
+
+(b) f2(n) <= d g2(n)
+
+Therefore
+
+   f1(n) f2(n)
+<= [c g1(n)] [d g2(n)]
+ = (cd) [g1(n) g2(n)]
+QED
+
+2-16
+====
+In the base case, consider an+b. If a<=0 then this is bounded above by b, which n^1 eventually exceeds. If a>0 then choose c=2a and consider all n >= b/a (so that an>=b). Then
+   an+b
+<= an + an
+ = 2an
+ = cn
+
+Inductively, suppose true for all such sets of constants with 1 <= z <= k-1. We'll prove the theorem for z=k.
+
+The sum is equal to O(a_k n^k + n^(k-1)) by the inductive hypothesis. By previous work this is the same as O(a_k n + 1) O(n^(k-1)). Applying the inductive hypothesis again, the left side is O(n), and applying that same multiplicative rule we wind up with O(n * n^(k-1)) = O(n^k), as desired.
+QED
+
+2-17
+====
+We have
+  (n+a)^b
+= (n(1+a/n))^b
+= n^b(1+a/n)^b.
+
+It therefore suffices to prove that (1+a/n)^b is bounded between two positive constants for sufficiently large n.
+
+Suppose n > abs(a). Then -1 < a/n < 1, so 0 < (1+a/n) < 2, and 0 < (1+a/n)^b < 2^b. Those are positive constants.
+QED
+
+2-18
+====
+lg lg n
+ln n, lg n
+(lg n)^2
+sqrt(n)
+n
+n lg n
+n^(1+ɛ)
+n^2 + lg n, n^2
+n^3
+n - n^3 + 7n^5
+2^n, 2^(n-1)
+e^n
+n!
+
+2-19
+====
+(1/3)^n
+6
+log log n
+log n, ln n
+(log n)^2
+n^(1/3) + log n
+sqrt(n)
+n / log n
+n
+n log n
+n^2 + log n, n^2
+n^3
+n - n^3 + 7n^5
+(3/2)^n
+2^n
+n!
+
+2-20
+====
+(a) f=1, g=n
+
+(b) None
+
+(c) None
+
+(d) f=n, g=1
+
+2-21
+====
+(a) true
+
+(b) false
+
+(c) true
+
+(d) false
+
+(e) true
+
+(f) true
+
+(g) false
+
+2-22
+====
+(a) f(n) = Ω(g(n))
+
+(b) f(n) = O(g(n))
+
+(c) f(n) = Ω(g(n))
+
+2-23
+====
+(a) Yes. Consider checking an n^2 matrix for the existence of some element value. You might have to search the whole thing, but you might get to stop anywhere before that.
+
+(b) Yes. Big-Oh is an upper-bound. Any O(n) worst-case algorithm is also an O(n^2) worst-case algorithm.
+
+(c) Yes. Use the example from (a).
+
+(d) No. θ(n^2) in the worst-case means, among other things, that there exist inputs which take θ(n^2) time, and those would not complete in O(n) time.
+
+(e) Yes. Both branches are θ(n^2), so you can min/max whichever constants you use in your analysis to conclude the entire thing is θ(n^2).
+
+2-24
+====
+(a) No. 3^n dominates 2^n.
+
+(b) Yes, both are θ(n).
+
+(c) Yes, 3^n dominates 2^n.
+
+(d) Yes, both are θ(n).
+
+2-25
+====
+(a) log(n)
+
+(b) n
+
+(c) n log(n)
+
+(d) n log(n)
+
+2-26
+====
+f4, f2, f1, f3
+
+2-27
+====
+f2
+f3
+f1, f4
+
+2-28
+====
+(a) n^5
+
+(b) 4^n
+
+(c) 9^n
+
+2-29
+====
+a, b, c
+
+2-30
+====
+(a) 4^n
+
+(b) n log(n)
+
+(c) n
+
+(d) n^100
+
+2-31
+====
+(a) O, o
+
+(b) O, o
+
+(c) None
+
+(d) O, o
+
+(e) O, o
+
+(f) O, θ, Ω

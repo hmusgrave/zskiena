@@ -6,5 +6,7 @@ test {
     _ = @import("1.7/1-28.zig");
     _ = @import("1.7/1-1.zig");
     _ = @import("1.7/1-2.zig");
-    _ = @import("1.7/1-3.zig");
+    _ = @import("2.10/2-1.zig");
+    _ = @import("2.10/2-2.zig");
+    _ = @import("2.10/2-3.zig");
 }

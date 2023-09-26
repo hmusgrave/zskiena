@@ -1,0 +1,36 @@
+2-1
+===
+The algorithm computes (n-1)(n)(n+1)/3. It runs in O(n^3).
+
+2-2
+===
+The algorithm computes (n)(n+1)(n+2)/3. It runs in O(n^3).
+
+2-3
+===
+The algorithm computes (n)(n+1)(n+2)(3n+1)/24. It runs in O(n^4).
+
+2-4
+===
+The algorithm computes n(n-1)/2. It runs in O(n^3).
+
+2-5
+===
+(a) The algorithm does exactly 2n multiplications and n additions.
+
+(b) The average case is the same as the worst-case.
+
+(c) Horner's algorithm from earlier in the book is a marked improvement. It uses just n multiplications and n additions.
+
+2-6
+===
+Note that max as written is semantically identical to the following for arrays of length 2 or greater.
+
+m := max(A[1..n-1])
+if A[n] > m then m := A[n]
+return (m)
+
+In the base case, the max of a 1-element array is the only element in that array, which max returns.
+
+Inductively, suppose max(A[1..n-1]) correctly computes a maximal value m from A. Then all elements A_1 .. A_(n-1) are less than or equal to m. If A[n] > m then by transitivity A[n] is maximal (and that's the value we return), otherwise m >= A[n] as well and is maximal (and would then be returned).
+QED

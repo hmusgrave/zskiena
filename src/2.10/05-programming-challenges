@@ -1,0 +1,11 @@
+2-1
+===
+This is relatively straightforward. Just do the addition, keeping track of carries. You don't have to store the result, just the carry count.
+
+2-2
+===
+This game (like many other dynamic programming problems) has the property that in certain regimes one player can force the other into a certain behavior. These regimes partition the game space, so you can determine the winner by identifying the partition.
+
+2-3
+===
+All positive integers that aren't perfect squares have an even factor count, so they'll be toggled an even number of times. Perfect squares have an odd factor count.

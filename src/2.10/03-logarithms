@@ -1,0 +1,58 @@
+2-39
+====
+(a)
+a^(log_a(x)) = x
+a^(log_a(y)) = y
+xy = a^(log_a(x)+log_a(y))
+log_a(xy) = log_a(x) + log_a(y)
+QED
+
+(b)
+If x<=0 then the problem is ill-defined. Note that log_a(x^y) == log_x(x^y)/log_x(a), and log_a(x) = log_x(x)/log_x(a), so the statement is equivalent to asking whether log_x(x^y) is equal to y log_x(x), which is just y.
+
+Going back to the definition of log, if log_x(x^y) == L then x^y == x^L. Taking the logarithm of both sides we conclude L == y, as desired.
+QED
+
+(c) Strictly speaking I suppose we should have proven this before (b)? Anywho, let u := log_a(x), v := log_b(x), and w := log_b(a). By definition, this means:
+
+a^u = x
+b^v = x
+b^w = a
+
+We want to prove u = v/w, which is equivalent to proving wu=v, which is equivalent to proving b^(wu) = b^v.
+
+Note that b^(wu) = (b^w)^u = a^u = x = b^v.
+QED
+
+(d) Applying tricks we've learned so far, we have
+
+  x^(log_b(y))
+= x^(log_x(y) / log_x(b))
+= y ^ (1 / log_x(b))
+= y ^ (1 / (log_b(b) / log_b(x)))
+= y ^ (log_b(x) / log_b(b))
+= y ^ (log_b(x)).
+QED
+
+2-40
+====
+Let k>=1 and n in [10^(k-1) .. 10^k-1]. All positive integers can be uniquely represented as such. By definition we have
+
+k-1 <= lg n < k, and
+k-1 < lg (n+1) <= k.
+
+Thus we also have
+
+k-1 = floor(lg n), and
+k = ceil(lg (n+1)).
+
+Since k-1+1=k we're done. Note that the same argument holds for any integral base >=2.
+QED
+
+2-41
+====
+By 2-40 this is equivalent to proving n has ceil(log(n+1)) bits. The range of a b-bit positive integer x is [2^(b-1), 2^b-1]. The range of n+1 for n in that range is [2^(b-1)+1, 2^b]. The log2 of any value in that range is greater than b-1 and is at most b, so on taking the ceil operation we get a result of b -- precisely the number of bits required to hold that integer.
+
+2-42
+====
+Since sqrt(n) = n^(1/2), that expression simplifies to O(n * (1/2) * log(n)), which is the same as O(n log n) and does not conflict with your big-omega finding.
