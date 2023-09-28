@@ -1,0 +1,51 @@
+3-10
+====
+Any ordinary tree structure does fine. It's O(log n) to find a least upper bound or a minimal element, so we can just build a tree, mutating (and deleting/re-inserting) bins capable of fitting the new values according to the appropriate heuristic, and return the bin_count.
+
+3-11
+====
+(a) A matrix with the correct answer in the (i,j) slot will suffice.
+
+(b) For the partial credit, one can imagine hierarchially splitting the data structure into blocks of 2, 4, 8, .... These could each be arrays. There are O(n log n) elements between all the arrays, and a query compares at the top level the minimum in any ranges fully within the interval and descends for the at-most-two boundary intervals. At each step you do at most a constant amount of work (two boundaries, constant interval count at that level which you haven't considered in an upper level, the boundary count doesn't multiply since they'll be closed on one end once you start descending), so with a logarithmic number of levels query time is O(log n).
+
+For full credit, one can imagine constructing that hierarchial structure described above only for every `log n` elements. Queries would have to descend as far as the root structure and on that very last step might have to do O(log n) work to finish up the two boundaries. The hierarchial structure takes up `O((n/logn) log (n/logn)) = O(n)` space.
+
+Coming back to this after having done 3-13, the previous idea was correct, but it was monstrous. We don't have to add nodes, so we can re-use the exact same sort of array-tree as in 3-13, and we just have to lightly modify the search procedure to support lower bounds.
+
+3-12
+====
+Note the question supposes a solution exists. Maintain a set of elements eligible for removal, and initialize it to the entire set. Iterate as follows:
+
+1. Remove an eligible element. If the oracle says a subset still exists, proceed with this smaller set, and remove the element from the set of eligible elements.
+
+2. If the oracle says a subset no longer exists, put the last element back (it's still ineligible for removal though), and try again for the rest of the elements. If any are unnecessary then proceed with the smaller set as in (1). If all are necessary, this is your subset (check any edge cases to ensure this check also terminates when you hit the empty set).
+
+3-13
+====
+One strategy is just to have a tree storing the sums (recursively) of each half of the array. Additions have to update logarithmically many such sums, and queries hit logarithmically many. Since we don't need any dynamism, store the tree implicitly in an array.
+
+To make this easier to track, we'll actually explicitly use a Node structure with a bunch of inlined methods which just does the binary splits. The compiler mostly optimizes away the bits of arithmetic since we don't cross any function boundaries with it, but duplicated search arithmetic between add and prefix_sum is appropriately contained, and I don't have to think too hard about fiddly arithmetic details in the middle of a loop.
+
+3-14
+====
+This is nearly the same as 3-13. Replace our pseudo-tree (type-casting array slices to nodes) with an actual tree to allow insert/delete to be fast.
+
+3-15
+====
+The problem suggests using two arrays, one associated with the possible inputs and one associated with the stored values. Let's also maintain a counter of how many things are in the structure.
+
+search(x):
+  - A[x] points to some index 1..m
+  - If that index represents uninitialized B memory (which we know since we're maintaining a counter of
+    the current utilization of B), x is not in the set
+  - If that index i := A[x] represents an initialized region of B, x is in the set iff x == B[i]
+
+insert(x):
+  - If x is already in the set, return
+  - Increment the counter
+  - Set A[x] to the counter value and B[counter] to x
+
+delete(x):
+  - If x is not in the set, return
+  - If A[x] is the last index of B, simply decrement the counter
+  - Let y := B[last_initialized] and i := A[x]. Set B[i] = y, A[y] = i, and decrement the counter

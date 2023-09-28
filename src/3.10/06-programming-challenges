@@ -1,0 +1,17 @@
+3-1
+===
+Maintain a set structure, as well as the min and max absolute difference you've seen. Iterate through pairs of the sequence, adding abs differences to the set. At the end return true iff the set has length n-1, the min is 1, and the max is n-1.
+
+Given that we know n ahead of time, a good choice for the set implementation is probably an array. In that case you wouldn't need to track the min/max because you'd just short-circuit if something were out of bounds.
+
+3-2
+===
+We just backtracked a bit, with a pattern dictionary to reduce the search space a little bit, a heuristic to select low-branching-factor decodings, and (lazily) propagating the translation to check for invalid states and exit early.
+
+3-3
+===
+This isn't too bad. With only 8 linear directions, with not a lot of overlap between the strings, and with relatively short search directions (and lots of them), there's not much reason to not just brute force it.
+
+3-4
+===
+This isn't too bad either. We'll search for a phrase with the same pattern as the sentinel string. If there are multiple then we're hosed unless we have additional information (like being able to detect whether the message looks like text or not), so that seems to be outside the scope of the problem. The sentinel string has every letter, so that's our decode table.

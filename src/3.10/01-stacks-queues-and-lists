@@ -1,0 +1,13 @@
+3-1
+===
+When you only have one type of open/close operation the algorithm doesn't even need a stack. If the prefix of a string contains a valid set of parentheses then you're always able to open parentheses, and you're able to close them iff there exists at least one unmatched open.
+
+3-2
+===
+Just traverse, keep track of the next child so you don't lose it, and reverse the pointers. Don't forget to patch up the root.
+
+3-3
+===
+(a) Insert till half full, delete, insert twice, delete twice, insert twice, ....
+
+(b) Cutting in half when the array drops below 1/4 full would suffice.

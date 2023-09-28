@@ -1,0 +1,26 @@
+3-16
+====
+This ought to be fun. We're just building a bunch of dictionaries.
+
+linked lists
+binary trees
+balanced binary trees (odd that balancing is required before it's explained?)
+hash tables
+
+We'll toss in some public domain book to do the analysis afterward. The dictionary needs to support
+- init
+- deinit
+- add
+- len
+
+I think we're actually going to skip balanced binary trees till we get that far. There are many data structure implementations in our future, and I don't think it's hard to see that they'll be a bit more expensive for each operation but that if you get unlucky with your construction order then they reduce the operation count enough to be meaningful.
+
+Writing a whole novel isn't critical, but a few highlights:
+- Set semantics are extremely slow with a list.
+- Hash collisions are surprisingly common. I recall a paper going over how open addressing gave them some huge performance wins, but I think there's a little nuance in the details.
+- The tree actually wound up being consistently a bit faster than a hash table (15%), despite memory fragmentation and everything else. Probably the overhead from computing a halfway decent hash.
+- There aren't that many words in a novel, even when you don't de-dup on caps, lowers, having a comma next to them, and so on.
+
+3-17
+====
+We'll just use a dictionary and find the rotation of best fit.

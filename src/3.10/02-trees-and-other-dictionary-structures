@@ -1,0 +1,31 @@
+3-4
+===
+The O(n) preprocessing for at most n distinct keys is helpful. We can just use arrays to store everything interesting.
+
+As a side-note, I'm a bit confused by their Dict method pseudocode. You can supposedly insert a thing without providing the key and then later search by the key and not the thing. Presumably this means that the thing you insert is a struct that also has the key or that the data structure has a key function builtin somewhere. All such options are equivalent though, so I just passed in a key to the relevant methods.
+
+3-5
+===
+(a) Data = 4, Pointers = 12, Total = 16, Overhead Fraction = 25%
+
+(b) Since leaves are a diferent type from internal nodes, assume they don't store any pointers (since as soon as they gained children you'd need to completely swap the node anyway). Internal nodes have 4 bytes of data, leaf nodes have 4 bytes of data, so the total data is just 4 times the node count.
+
+In the best-case, the tree is balanced, so leaf nodes are half the tree, internal nodes are half the tree, and the Overhead Fraction is 50%. In the worst-case, the tree is an arbitrarily set of linked lists, and the Overhead Fraction can approach 0%.
+
+3-6
+===
+Maintaining forward/back pointers to the next element is an easy way to tack on O(1) successor/predecessor operations. Any mutation now needs to do something with the new state. An insertion is either between two nodes and will replace their forward/backward pointers or is on an edge and just updates one other node's pointers. Deletions need to glue together the successor/predecessor for the deleted node. Any re-balancing operation needs to similarly match up all the new pointers.
+
+3-7
+===
+If the dictionary spends O(1) space to store the min/max then those can be updated during the O(log n) steps required for insert/delete.
+
+3-8
+===
+A tree that keeps track of how many sub-elements each tree has should do the trick. It's easy to modify such a structure to store data too, so let's focus on the essentials of just a key api, not values. We'll defer the question of balancing the tree till later chapters that cover that material.
+
+Our implementation doesn't use a lot of abstractions to clean things up. I'm sure there are cleaner options?
+
+3-9
+===
+This isn't bad at all. The max of S1 or min of S2 can be found in O(h) time, and either of those are great candidates for the new root.

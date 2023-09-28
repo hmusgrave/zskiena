@@ -1,0 +1,51 @@
+3-18
+====
+I normally have a rough guess of where the word is (x,y,z are small, so I jump all the way to the back for any of those), split there, if the word is smaller jump backward, and if bigger then forward. Hierarchially, at each level I have an idea of how well my guesses are doing (e.g., if the 2nd letter is 'a' then it'll be at the beginning of a chapter), so splits are not usually right in half.
+
+3-19
+====
+Sort them?
+
+3-20
+====
+Initialize two pointers, and advance one two steps for each step the first one travels. When the fast pointer hits the end the first is at the middle (the exact order of comparison/traversal will depend on which middle node you want -- take care with off-by-one issues).
+
+3-21
+====
+Just recurse. If the nodes have different keys (or one is null when the other isn't), return false. Otherwise return true iff their two left nodes are identical and if their two right nodes are identical.
+
+3-22
+====
+The question isn't super clear. To convert the tree to a linked list in a way that's semantically correct, you traverse it (pre-order, in-order, ...) and build a list. If instead you want to modify the nodes themselves to behave like a linked list:
+
+Convert the left nodes to a linked list (for each of these operations, returning the head and tail for convenience), same with the right, and then link the two together with the current node in between. If there are parent pointers then use them for back pointers. Set all the left pointers to null. Use the right pointers for linked-listy-stuff.
+
+3-23
+====
+I've done that a couple times for this book. Just iterate over the list, keeping track of two consecutive nodes. Every time you find a new one, point the most recent of the two you're storing to point backward instead. Update the two consecutive nodes to the most recent of them and the new node you just discovered. Don't forget to make the previous head (if it exists) point to null.
+
+3-24
+====
+Anything with set semantics works, but a trie is particularly well suited to urls given their propensity for huge prefix overlaps.
+
+3-25
+====
+Initialize a multiset (e.g., a tree with duplicates) with the search string. Iterate through the magazine, removing characters from the multiset. If the multiset is ever empty then you're done. Otherwise, the letters can't be removed from the magazine.
+
+3-26
+====
+The easiest solution that comes to mind is to reverse the whole string (pairwise swap characters from the outside in), and then iterate to find word boundaries and swap characters in each word. To save a bit of cache pressure it might be faster to conceptually do the same thing but to do the word reversals as soon as they're "uncovered" by the whole string reversal.
+
+3-27
+====
+This is a modification of the algorithm above to find the middle of the linked list. Maintain two pointers, and advance one faster than the other. You'll either hit the end of the list (no loops), or the pointers will eventually coincide. Both pointers are currently on the loop at that point, but if you want to go to a specific node on the loop (first node on the loop, first node forcing a second inbound pointer, ...), you could additionally maintain a counter (for convenience) of the distance the slow pointer has traveled, move both pointers forward till they coincide again (to compute the loop's size), and compute how far to push the slow pointer forward to move to the desired location.
+
+3-28
+====
+Maintain two arrays, one with prefix products P := [1, x1, x1*x2, ...] and one with suffix products S := [..., x_{n-1} * xn, xn, 1]. Iterate through and set Mi = Pi * Si.
+
+Fun fact, this was one of my interview questions for Google. It took an embarassing amount of time, but the general concept of maintaining two partial completions to satisfy monotonic range queries is pretty general. It's a good trick to know.
+
+3-29
+====
+This is essentially the same problem as finding the frequency of a given word in a webpage. Any dictionary data structure (storing counts in the nodes) will suffice. If you're feeling cheeky you can store the index the word pair appears in the string rather than the string itself to save a bit of memory. Hash tables are well suited, but a trie wouldn't be terrible either (and would probably be preferred if you can't refer back to the original page with random access in O(1) or need to copy the strings).
