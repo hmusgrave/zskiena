@@ -1,0 +1,30 @@
+4-12
+====
+Initialize a heap in O(n), and pop the k smallest items off for O(log n) cost k different times.
+
+4-13
+====
+(a) Both options have equal asymptotics and similar machin code.
+
+(b) A max heap is better. Deletions are O(n) in a sorted array and O(log n) in a heap.
+
+(c) A max heap is better. Initialization is O(n) rather than O(n log n).
+
+(d) A sorted array is better. The max-heap imposes almost no structure on where the minimum element will be.
+
+4-14
+====
+Maintain a min-heap pointing to each of the k lists, sorted by their current smallest element. Pop off the first item from the heap, pop the smallest element from the list, add it to the result buffer, and re-insert the list to the heap.
+
+4-15
+====
+Suppose there are n=2^k elements to make the math nice. Asymptotics are similar when you have stragglers to consider.
+
+(a)
+- Do n/2 comparisons to find pairwise winners. Pit those winners against each other to find quadwise winners, and so on. You do a total of n-1 comparisons to find the least element.
+- The runner-up can't lose to any element other than the least element, but it has definitely lost somewhere (it wasn't pronounced the least element), so it's one of the k elements the least element was paired against. Do another k-1 comparisons (iteratively splitting that set in half) to find which it is.
+- This totals to k-2+2^k comparisons (or around n+log n).
+
+(b) The 3rd element must have been compared to (and been found too big) both the least and the 2nd least element. Do another log n comparisons (slightly bigger constant factor) to find it.
+
+For this particular algorithm you do need to find the 1st and 2nd best items first. Other solutions might not care about the relative ordering of #1 vs #2.

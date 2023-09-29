@@ -1,0 +1,58 @@
+4-21
+====
+If you keep track of which elements came first in the initial array then you can use that extra information when pulling otherwise equal elements off the merge queues. You get that for free (some memory indirection costs, might be worth it anyway though given how much copying merge-sort has) with some space savings if your merge queues reference the initial array by index.
+
+4-22
+====
+I must be missing something. Use an array to maintain element counts in the first pass. You have O(n+k) time to initialize the count buffer and iterate through the data. The count buffer is already sorted (integers in a range). Iterate through it at O(k) cost, and for each element overwrite the right amount of memory in the original data with the right number of copies fo that element at O(n) total cost. You pay O(n+k), but if, as the problem stated, the interesting case is when k<<n then in the interesting case it's O(n), and a fairly fast O(n) at that.
+
+One tweak to guarantee O(n log k) is to fall back to a normal sort when k >= n log n.
+
+4-23
+====
+Similar idea 4-22. We'll do a counting sort and use any balanced tree as the dictionary structure. Operations are logarithmic in tree size, which is logarithmic in list size, so you populate it in O(n log log n) time. I suppose you could've used a tree instead of an array in 4-21? That seems wasteful and complicated though.
+
+4-24
+====
+Brainstorming, you can sort the remaining sqrt(n) elements in sqrt(n)log(sqrt(n)) (which is the same as sqrt(n)log(n)) time and then merge the two sub-arrays. You can figure out where the merges should occur in sqrt(n)log(n) time as well, but you can't avoid potentially moving O(n) memory, so the overall running time can't be guaranteed to be reducable below the O(n) this strategy hits.
+
+4-25
+====
+Same as 4-23? You get O(n lg lg lg n). Also, as a practical matter, lg lg n is a miniscule number. log2(log2(2**256)) is only 8, and a list with that many elements would take most of the universe to store. Using a small array on the stack to do the counting can drop that to O(n) for any practical problem.
+
+It's a bit weird that I didn't use the fact that the list was full of perfect squares. That seems relevant, but I can't for the life of me fathom how.
+
+4-26
+====
+(a) Suppose you always use fewer than n-1 comparisons, and the input is all 0s. Link all elements by the n-2 comparisons you did as edges, and note that this graph is disconnected. (in)equality only provides information about other nodes through transitive links, and at this point, any assignment of 0s and 1s to the different connected regions (of which there are at least 2) would necessarily result in the same output from your sorting algorithm. Since some of those (consider a labeling with some 0s and 1s, and also the negation of that labeling) have differing correct sorts, at least one of them must be wrong.
+
+For the algorithm, link up all n nodes in a chain of n-1 comparisons. If all comparisons return equality, leave the list alone. If there are any inequalities, the direction tells you which element was a 0 and which was a 1. From that inequality, propagate outward to the ends of the chain, tallying the 0s and 1s. Overwrite the array with appropriate counts of each.
+
+(b) Pair up the nodes and do n/2 comparisons. Any inequalities tell you about 0s and 1s to add to your count. Any equalities give you pairs of 0s and 1s (but you don't know which character a given pair has). There are n/2 nodes on average which were assigned to pairs as such, so there are n/4 such pairs. Do n/8 comparisons on these pairs (choose an element from each, since the elements are identical within a pair), and repeat as above. You'll accumulate larger and larger chunks that are the same element, and you need n/2+n/8+n/32+...<=2n/3 comparisons on average to resolve all the counts. Any remaining chunks at the end, compare to a known 0 or 1 you found earlier to bring the total comparison count up to 2+2n/3.
+
+Optimality isn't too bad. Suppose you have two nodes X and Y. They're each one with probabilities p and q (respectively), and those are independent (in this particular problem, you have no way to have partial information about the relationship between two nodes other than knowing that they're the same or knowing their exact values, so assume we haven't previous proven they have the same value).
+
+When the nodes are unknown, p=q=0.5, and the entropy of the system is (summing over all 4 possible states)2 bits. After comparing them, you have a 50% chance of having 0 remaining bits (you know which of X and Y are 0 and 1), or you have a 50% chance of being in a 1-bit state (either both nodes are 0 or both are 1). On average, you gain 1.5 bits of information. Note that in the worst-case you gain 1 bit.
+
+When one node is known, the system being compared only has 1 bit of entropy, so you can't possibly gain more than 1 bit of information from the comparison. (and when both nodes are known, the system has 0 bits, don't re-compare nodes).
+
+Sorting correctly is equivalent to knowing exactly what the value of each node is (less 1 bit of entropy iff all nodes are 0 or all are 1), so the sort that minimizes the number of comparisons is precisely the one which maximizes expected entropy reduction.
+
+So, how many bits of entropy are in the system? Well, precisely n. A comparison reduces entropy by at most 1.5 bits (on average), so we need at least n/1.5=2n/3 comparisons on average to sort correctly.
+
+4-27
+====
+Brainstorming:
+- Start by re-imagining the problem in polar coordinates. Rays from q hit an edge iff the angle of the ray lies within (inclusively) the angles of the vertices of that edge with respect to q. Interestingly, the radius doesn't matter for that computation.
+- Choose some vertex as the reference angle so that we don't have to worry about fiddly wraparound details.
+- Each edge on the polygon can now be interpreted as just intervals [a,b] lying in the range [0+ref, 2pi+ref]. Normalize to [0,1] if you want?
+- So our problem is figuring out which point in that interval, when shot directly upward, would intersect the most segments. That seems more manageable?
+- Well, yeah actually, that's super manageable. Sort the vertices. Iterate through them. If a vertex ends some segment we were intersecting, decrement the running intersection count (also keep track of a running max while we do this). If it starts one, increment the count.
+- Note that the vertex might (in this polar re-framing) start or stop two edges at a time rather than just always stopping one edge and starting another as you would do if you took a lazy walk around the polygon. Also, take care to ensure the math is bitwise identical everywhere so that you don't accidentally double-count or zero-count a given vertex with respect to its two edges.
+- Floating-point math is nasty when you consider edge cases like a wall exactly coinciding with a ray. The problem definition suggests we'd want that to count as one hit, but a misplaced bit might make us miss it. The way the problem is written I don't think we're supposed to care about that sort of numerical analysis.
+
+As sort of a fun aside, converting to theta isn't really necessary. We just need some function that's monotonic in theta on a big enough interval. We can compute cos(theta) pretty simply by dotting with a reference vector and dividing by the magnitudes (especially convenient because it trivially allows us to use a vertex as our zero coordinate). Cosine is monotonic on half its period (wrong direction, but we could negate it if we cared), so we'd like a way to take theta and slow it down by a factor of two. The half angle formula gives us cos(theta/2) = sgn(cos theta/2) sqrt((1+cos theta)/2). The sgn isn't too bad -- use a dot product with the normal of our reference vector to figure out if we need a minus sign or not. For the rest, the sqrt is monotonic, and so are the +1 and /2 operations, so rather than converting to theta as initially described you instead compute:
+
+sgn(dot(v, normal)) * dot(v, normal) / mag(v)
+
+The division by magnitude is annoying but necessary (fast assembly exists for it nowadays), but rather than computing a bunch of inverse cosine or other slow transcendentals, you can do a few dot products -- the thing your CPU was designed for.

@@ -1,0 +1,11 @@
+4-28
+====
+  log(sqrt(n))
+= log(n**(1/2))
+= (1/2) log n
+
+The two bounds are both O(n log n).
+
+4-29
+====
+If such a queue existed, you could insert an array full of data into it in O(n), then extract the data back out in sorted order in O(n) via the O(1) Extract-Max operation. This contradicts the Ω(n log n) bound for general sorts.

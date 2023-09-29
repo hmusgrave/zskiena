@@ -1,0 +1,66 @@
+4-30
+====
+single-array, binary-search:
+  log(n) per access
+
+multi-array, binary-search:
+    0.6 log(0.4n) + 0.4(log(0.4n) + log(0.6n))
+  = log(0.4) + 2log(n) + 0.4log(0.6)
+  ~ 2log(n) - 1.6
+
+  The extra log(n) is around 13.3 for 10k names, which is much
+  greater than the 1.6 we save. Single-array was far better on
+  average, BUT our "good" customers do get a better experience
+  with the access time going dowm from around 13.3 to 12.
+
+single-array, linear-scan:
+  n per access
+
+multi-array, linear-scan:
+    0.6 (0.4n) + 0.4(0.4n + 0.6n)
+  = 0.64n
+
+  This is far faster on average, and perhaps more importantly
+  it's 2.5x faster for the "good" customers we might care more
+  about retaining (note that average performance for the bad
+  customers dropped to 0.7n rather than 0.5n because we always
+  spend the first 0.4n scanning the good customers, so we 
+  eliminated the case they might have gotten lucky in their
+  search).
+
+4-31
+====
+- If you know k, simply return the kth element.
+- If you don't know k, compare the first and last elements. If the last element is greater than
+  the first then k==0. Equality can't possibly be allowed with O(lg n) target performance because
+  otherwise you might have, e.g., an array with only 2 distinct values and 1 copy of the larger element,
+  and a linear scan would be required to find its home. If all values are distinct, then if
+  k!=0 we necessarily have the first element of the array greater than the last. Do a binary
+  search to find the transition point (the first element less than the first element of the array).
+  Now you know k.
+
+4-32
+====
+(a) Binary search.
+
+(b) One-sided binary search, increasing exponentially till you have a bound on the subset of 1..n being used.
+
+4-33
+====
+If the integers are distinct, then a_i - i increases monotonically (i increases by 1 and a_i increases by at least 1). Binary search on that difference.
+
+4-34
+====
+Given a reference point i, you know exactly large a_k should be if there were no gaps in the sequence (namely, a_i + (k-i)). If a_1 != 1 or a_n != m then return something on the boundary. Otherwise, note that the gap between a_k and the ideal a_k grows monotonically (larger gaps add to it, and the monotonicity of distinct sorted integers keeps it from decreasing). Binary search on the gap till you find the first place there's a jump of more than 1.
+
+4-35
+====
+Brainstorming:
+Consider a query at (i,j).
+- If Mij==x then we're done.
+- If Mij<x then we've ruled out the upper-left corner of the matrix.
+- If Mij>x then we've ruled out the lower-right corner of the matrix.
+
+That looks problematic because of the anti-main corners.
+
+Ah no, this is fine. Binary search the main diagonal. If you find x then great. If not, you find a transition point where you rule out both the upper-left corner of the matrix and the lower-right (and those corners touch). That property holds on all the main diagonals though for the sub-matrices. Search those recursively. They shrink in size by half (things are wonky if the matrix is very unbalanced, but the problem still reduces by a factor of the smaller of n/m and m/n). You do O(log(nm)) comparisons, with the base depending on the matrix skew.

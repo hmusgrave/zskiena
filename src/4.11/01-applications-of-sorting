@@ -1,0 +1,79 @@
+4-1
+===
+The easiest solution is to just sort and split the array in half.
+
+You can actually get an expected runtime of O(n) on this one since you don't require a full sort. Imagine you knew the best/worst players; then you could do a bucket sort and O(1) throw the players in the two teams. We don't know the median and don't know the best/worst players, so we can't start out with distribution sort, but we can do something similar.
+
+We're going to use an in-place sort hybrid select_small(arr, k) which shuffles the k smallest elements to the bottom of the array. As in quicksort, choose a pivot, and move elements around that pivot. Apply select_small to the subarray which would contain the upper bound for any worst-performing n players.
+
+Concretely, if there are k-1 or k players worse than the pivot then you're done. If there are fewer than k-1 players worse than the pivot then select_small on the subarray larger than the pivot with a suitably reduced k. If there are more than k players worse than the pivot then select_small on the smaller subarray without modifying k.
+
+Each time you roughly split the array in half, and you only work on one subarray, so you get a geometric sum for O(n) runtime.
+
+4-2
+===
+(a) Linear scan, tracking min/max elements. Return their absolute difference.
+
+(b) Being sorted, the first/last elements are the min/max. Return their absolute difference.
+
+(c) Sort the integers. Linear scan through consecutive pairs, tracking the smallest non-zero difference. Return it.
+
+(d) As in (c), but the array starts sorted, so skip that step.
+
+4-3
+===
+Brainstorming:
+
+(a,b,c,d) (sorted)
+
+Would you _ever_ have b+d and a+c? No, because the smallest element is b+d, and if you instead consider the pairing (a+d,b+c) you'll note both a+d<=b+d and b+c<=b+d because a<=b and c<=d.
+
+This is more general. For any solution with "crossed" pairs, there is a solution no worse with uncrossed pairs (and strictly better if there aren't a lot of duplicates).
+
+Iteratively, one can conclude that an optimal pairing always exists by pairing the first element with the last, second with second-to-last, .... So, our algorithm should start by just sorting the numbers. If you need them contiguous in memory, take every pair from the outside in (so elements 0,1 and n-1,n-2, then proceeding in the next step with 2,3 and n-3,n-4) and swap the greatest in each pair (so swap 1,n-1 and 3,n-3). If the array length is 2 mod 4 then there will be a pair in the middle you don't touch.
+
+4-4
+===
+The most braindead solution I can come up with is to prepare 3 buffers (e.g., arraylists), iterate through the sorted array and dump them into the buffers according to their color, then re-assemble in the original array.
+
+4-5
+===
+Sort the numbers, do a linear scan keeping track of the best mode (count) so far and what its value (the mode) is.
+
+4-6
+===
+Sort S1. For each element y of S2, binary search for x-y in S1.
+
+4-7
+===
+(a) Sort the checks by whichever unique identifier would tie them to the right bill. For each bill, binary search for its unique id in the pile of checks. If not found, add to the result pile. Worst-case performance (for a suitable choice of sort implementation) is O((#bills + #checks) log #checks).
+
+(b) If your list of books is already sorted by publisher, do a boundary scan for where publishers transition in that list with runtime O(#publishers log #books). If it's not sorted, run through the list sequentially and dump into the 30 publisher buckets for O(#books).
+
+(c) Sort the checkout cards by name, keeping track of a running count, only adding a new card if that name does not already exist. Runtime is O(#cards log #names).
+
+4-8
+===
+(a) Sort S. Apply the same idea as in 4-6, being careful to not use the same element twice.
+
+(b) Maintain two pointers, one toward the beginning of the list, and one toward the end. When the pointers coincide, return that there are no two elements with the requisite property. When their pointed-to values sum to x you're done. When the current sum is too small, increment the left pointer. When the current sum is too big, decrement the right pointer.
+
+4-9
+===
+(a) Sort A and B. Apply (b) from this problem.
+
+(b) Do basically the same thing as the merge step of merge sort, but bump pointers forward on duplicate values as well.
+
+4-10
+====
+For k==1, we have to assume the input has some structure already, e.g., that it's sorted. If it is, simply binary search for the element.
+
+For k>=2, start by sorting the set. A tree structure might be beneficial so that we can remove nodes. If k==2, apply 4-8(b).
+
+For k>=3, for each x in the set, remove (and when proceeding re-add) it from the set and check for the existence of T-x in k-1 steps.
+
+4-11
+====
+I'll think about it more in a minute, but an easy solution uses a hash-based dictionary. Linear scan to increment counts, and return the only element (or yield any elements for the n/4 case) exceeding the desired threshold.
+
+I thought about it a bit, didn't come up with anything obvious, and did a bit of research. This one's actually kind of fun. You can implement it for any n/k (not just n/2 or n/4). The idea is that if you remove any k distinct elements any element of greater than n/k popularity stays greater than (n-k)/k popular. Iterate, maintaining a bag (e.g., a tree with element counts), and whenever the bag has k distinct item types you remove 1 from each count (freeing slots completely if the counts were 1). Anything that remains satisfies the desired condition.

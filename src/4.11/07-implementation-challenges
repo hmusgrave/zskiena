@@ -1,0 +1,22 @@
+4-36
+====
+A naive approach binary searches each row, searching for 0 and counting occurrences.
+
+We can do a little better since the joint structure of the rows/columns imposes a diagonal-looking constraint on where the zeros can be.
+
+Start by binary searching the anti-diagonal. Either you find a zero (and there can only be one on the anti-diagonal), or you find where pos/neg meet up. Either way, the entire upper-right and lower-left of the matrix are ruled out now. Recurse on the sub-matrices, as in 4-35.
+
+4-37
+====
+This ought to be fun. Let's implement a few sorts :)
+
+Some implementation notes:
+- Heaps are drastically easier to implement when you throw a phony Node interface over the arithmetic.
+- Randomization didn't seem to help quicksort, and neither did picking the best-of-k median with randomization. This suggests that the novel being analyzed was sufficiently random for quicksorts purposes.
+- Quicksort was relatively slower on longer inputs than the other methods. Perhaps the duplications inherent in a book caused problems?
+- I was surprised that mergesort was so fast, having so many copies. Perhaps the sequential nature of the work being done helped make up for it, and my computer does sustain 18Gbps or so through main memory.
+- I was definitely surprised heapsort was so fast. It's nice that it's in-place and doesn't move very many things, but it's several times faster than the alternatives on that data.
+- Selection sort is, unsurprisingly, very, very slow.
+- All the sorts are within a factor of 2 for small data (i.e., not many duplicates), and quicksort takes a minor edge.
+- Quicksort is a bit fiddly to get right as an in-place algorithm.
+- Mergesort is dead-simple to write.

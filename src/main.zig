@@ -25,4 +25,7 @@ test {
     _ = @import("3.10/3-2.p.zig");
     _ = @import("3.10/3-3.p.zig");
     _ = @import("3.10/3-4.p.zig");
+
+    _ = @import("4.11/4-36.zig");
+    _ = @import("4.11/4-37.zig");
 }
