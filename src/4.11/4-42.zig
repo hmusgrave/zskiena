@@ -68,7 +68,7 @@ fn heap_sort(comptime T: type, lt: anytype, _data: []T) void {
                 const z = self.data[node.i];
                 self.data[node.i] = self.data[max_idx];
                 self.data[max_idx] = z;
-                self.bubble_down(self.node_at(max_idx));
+                @call(.always_tail, @This().bubble_down, .{ self, self.node_at(max_idx) });
             }
         }
     };
