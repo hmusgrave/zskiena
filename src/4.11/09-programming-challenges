@@ -1,0 +1,42 @@
+4-1
+===
+The easy solution is to report Vito to the IRS for tax evasion. Barring that, the optimal address lies between any median indices (odd relative counts yield a single address, even yield two addresses, both of which (or any fraction between) have equivalent total distances). Find a median in O(n), then add up the distances.
+
+4-2
+===
+There's a trivial solution that, starting from the largest pancake and decrementing, flips just under the current size pancake (to move it to the top), the flips the whole sub-stack no greater than that pancake (placing it on top of the sub-stack of larger pancakes below). You have 2n flips, and with 1-30 pancakes per stack you can iterate through the stack each time and not require fancy data structures. I'm not sure we need to code this.
+
+4-3
+===
+- The flashlight has to go across the bridge and then come back.
+- Two people go with the flashlight one direction, and 1-2 come back.
+- There's no point in people coming back except perhaps if it were possible for them to speed up the other people going forward.
+- For every back-and-forth, a net of one person goes across the bridge.
+- If you send any fastest person forward with any other person and then back with the flashlight, that person crosses as quickly as possible (since they are the limiting factor in the group, and any other grouping either has that same speed or is further limited by a slower party), and the flashlight returns as fast as possible (because nobody is faster than the fastest people).
+- Hence, one viable strategy is to pair the fastest person with each other person and always send them back with the flashlight. They have to cross the bridge forward n-1 times and backward n-2 (the last time they can stay crossed). The total time is (n-2) times their personal crossing time, plus the some of everyone else's crossing times.
+- You can code that in linear time, maintaining a running total and a running min time (not even necessarily knowing the size of the group ahead of time). Once you've determined the min, add n-3 times that min to the running total.
+- Take special care with groups of 0 or 1 people (where you just sum the crossing times). The previous formula is only valid for n>=2.
+
+4-4
+===
+The greedy solution (always work on the job with the highest S/T ratio) is necessarily optimal.
+
+Suppose instead that you have some job ordering j1, j2, ..., jx, ..., jy, ..., jn where jx has a lower S/T ratio than jy.
+
+As a brief lemma, note that you can treat the intermediate jobs j(x+1)..j(y-1) as a single job for the purposes of moving jx and jy relative to that intermediate block, and the deltas between those orderings as they pertain to the entire set of jobs is exactly as if you were just considering those 3 (jx, jy, and the composite) jobs.
+
+Secondarily, note that with a brief proof by cases you can show that with 3 jobs A, B, C with descending S/T ratios so that A>=B>C, the optimal ordering (minimizing fines) is A, then B (or B then A if equality holds between them) then C. All other orderings have greater fines.
+
+And then we're nearly done. Since jx has a strictly lower S/T ratio than jy, there is an ordering of those 3 jobs with lower total fines, and that same improvement translates to the entire set of j1..jn jobs.
+
+Therefore, any optimal job ordering never has inversions in the S/T ratio. I.e., jobs are sorted by descending S/T ratio.
+
+We haven't considered the impact of any secondary sorts. While the ratio might be the same, completing shorter or longer jobs might be preferrable. Interestingly, this isn't the case at all; secondary sorts don't matter. The problem statement asks for lexicographically sorted solutions, so we'll still have a secondary sort key on the job id (i.e., do a stable descending sort by S/T).
+
+4-5
+===
+Instead of turtles, suppose you're handling integers and want smaller ones on top (same idea, faster to talk about). No operation will fix a small int being under a large int other than performing the shuffle on that small int, so as a lower bound you need to apply a shuffle to every int which currently has a larger int above it somewhere.
+
+That's also an upper bound. If you shuffle the largest (remaining) ints first, you'll have a sorted tower when you're done.
+
+The problem asks for the sequence of moves (not just its count). Working from the top-down, maintain a running max. Any int you find which is less than the max you toss in a max heap. Pop them off the heap to get the desired shuffle order.

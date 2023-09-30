@@ -28,4 +28,6 @@ test {
 
     _ = @import("4.11/4-36.zig");
     _ = @import("4.11/4-37.zig");
+    _ = @import("4.11/4-42.zig");
+    _ = @import("4.11/4-1.p.zig");
 }

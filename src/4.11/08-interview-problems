@@ -1,0 +1,49 @@
+4-40
+====
+Any sort would be fine. By default I'd probably use whatever the stdlib provides (heapsort in Zig, timsort in Python, ...), and if I had to do it myself I'd be tempted to write mergesort just for the simplicity. Heapsort is nice because it has O(1) additional memory and O(n log n ) worst-case performance.
+
+4-41
+====
+Quicksort is finicky to get fast in all cases. Duplicate keys, poor pivot selection, partially sorted inputs, and whatnot put a damper on performance. Moreover, it's super finicky to make stable. Once sufficiently hardened though, it's supposedly usually faster than other sorts.
+
+Heapsort is O(1) additional memory, is easily made stable (default swap on equality rather than default leave alone), is worst-case O(n log n), and isn't terrible to implement. It doesn't have notable failure modes.
+
+Mergesort in any not-excessively-complicated implementation requires a large buffer and incurs a lot of copies. The fact that many of those copies can be bunched together makes it especially convenient for disk-based implementations (merging files and whatnot while not writing to many random blocks). It's also O(n log n) worst-case.
+
+Selection sort is great if your data is known to already be nearly sorted. It's dead-simple to write, and it's extremely fast for small inputs as well. It has quadratic worst-case runtime though.
+
+Counting sort (or distribution sort if you need to tie keys to values) is O(n) and very fast if you know your data doesn't have very many distinct keys, and variants usually have performance like O(n lg lg n) or O(n lg lg lg n). It's not hard to write either.
+
+4-42
+====
+Just for fun, I think I'll do this in-place. You could do a one-sided binary search to find boundaries between distinct elements, but unless you have a lot of repeats I think that'll tend to be slower than a straight linear scan. It doesn't change the asyptotics regardless.
+
+4-43
+====
+Implement any sort capable of working on chunks of that memory at a time. Mergesort is a good candidate since it explicitly pages out to buffers. If you're on an appropriate OS, you pay the cost of page table management anyway, so you might as well use something like mmap to handle paging to and from disk and just write an in-memory sort.
+
+4-44
+====
+A naive solution uses a doubly-linked list and stores in each node the data being pushed to the stack along with the "minimum so far". When pushing, compare the element to the minimum so far to determine exactly what to append to the list. When popping, no extra work needs to be done. This doesn't contradict theta(n log n) bounds for sorting because, unlike a priority queue, the element we're popping is not guaranteed to be a minimum.
+
+4-45
+====
+The problem definition helpfully skirts around having to worry about word length. One trivial solution iterates on the smallest of the sorted lists of indices, using binary search to skip forward/backward in the other two lists to find the locations (if any) of the other two words closest to the current. That's O(smallest_list log(biggest_list)) performance.
+
+Alternatively, if all lists are around the same size, you can get O(n) by just advancing pointers between all the transition points. While the current snippet is invalid, advance the right pointer. While it's valid, advance the left pointer. Keep track of the smallest snippet.
+
+My gut says you can't do much better. A priori you don't know much about the interleavings of even two lists of word positions, so unless there were a lot of extra structure (like one list being smaller in its entirety than the other), you'd probably have to do a linear scan of at least one.
+
+4-46
+====
+A greedy solution minimizing expected entropy would have us do a 4/4/4 split between groups X,Y,Z and check if X <=> Y (leaving Z alone).
+
+If the miscreant element is in Z, label Z := {z1, z2, z3, z4}. Weigh z1,z2 against two good elements. If they're the same then weigh z3 against a good element. If those are the same then z4 is bad. Otherwise, z3 is bad. If z1,z2 were different from the good elements, then weigh z1 against a good and similarly show that either z1 or z2 is bad.
+
+Otherwise, without loss of generality suppose X < Y. Label the sets X := {x1, x2, x3, x4} and Y := {y1, y2, y3, y4}. Set A := {x1, y1, z1} and B := {x2, x3, y2}.
+
+If A<B then either x1 or y2 is the culprit. Weigh one of them against a good element.
+
+If A>B then either x2, x3, or y1 is the culprit. Weigh x2 and y2 against two good elements. If the total is the same then x3 is the culprit. Otherwise, if they weigh less than the good elements then the culprit is light and therefore from X (and is x2). Otherwise, the culprit is y2.
+
+If A==B then the culprit is x4, y3, or y4. As in the A>B case, weigh x4 and y4 against two good elements and use the known fact that X<Y to deduce the culprit.

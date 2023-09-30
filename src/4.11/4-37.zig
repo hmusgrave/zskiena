@@ -95,7 +95,7 @@ const MaxHeap = struct {
         var max_idx: usize = node.i;
         for (0..2) |i| {
             const child = node.child(i) orelse break;
-            if (lt(node.val(), child.val()))
+            if (lt(self.node_at(max_idx).val(), child.val()))
                 max_idx = child.i;
         }
 

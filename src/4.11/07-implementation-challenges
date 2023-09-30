@@ -15,8 +15,25 @@ Some implementation notes:
 - Randomization didn't seem to help quicksort, and neither did picking the best-of-k median with randomization. This suggests that the novel being analyzed was sufficiently random for quicksorts purposes.
 - Quicksort was relatively slower on longer inputs than the other methods. Perhaps the duplications inherent in a book caused problems?
 - I was surprised that mergesort was so fast, having so many copies. Perhaps the sequential nature of the work being done helped make up for it, and my computer does sustain 18Gbps or so through main memory.
-- I was definitely surprised heapsort was so fast. It's nice that it's in-place and doesn't move very many things, but it's several times faster than the alternatives on that data.
 - Selection sort is, unsurprisingly, very, very slow.
 - All the sorts are within a factor of 2 for small data (i.e., not many duplicates), and quicksort takes a minor edge.
 - Quicksort is a bit fiddly to get right as an in-place algorithm.
 - Mergesort is dead-simple to write.
+
+4-38
+====
+I think the easiest thing to do here is just use mmap. There are a few details to get right to let pages get flushed (shared files, ...), and if you need a buffer that should be at some nice location (looks like `testing.tmpDir` does about the right thing), but basically any sort pointing at those memory-mapped regions should work fine.
+
+With our implementation of merge-sort we'd need to use the slice in question rather than allocate a buffer, and if the thing you're sorting by has uneven records you'll probably want to use a temp buffer to fill with the indices of the records, sort those, and then get back to work on the original file, but there isn't much to do here that we didn't already do in 4-37. I'll probably skip this particular exercise.
+
+4-39
+====
+A fairly straightforward approach for <1M CPUs is to recurse till the problem is several times larger than the number of processors (say 4-10x), and dump the sub-tasks into a queue. Each processor pops a task off the queue (where a "task" is a couple pointers saying where to do the merge-sorting), does its work, and grabs another when its current work is done. Splitting into smallish units like that (not too small to avoid overhead dominating) reduces the "straggler" problem and ensures all processors finish at roughly the same time.
+
+At that point, you have a chunkwise-sorted list and need to (somewhat) efficiently distribute the small number of remaining large merge operations among the various processes. To avoid the straggler problem on this end of things, what we're going to do is split up merges into a few tasks (the bigger the merge the more splits, targeting a constant amount of work per core).
+
+Consider the task of merging [a1, ..., an] (sorted) and [b1, ..., bk] (sorted). Choose some middle element b_i. You can binary search to find a split [a1..az], [a(z+1)..an] such that everything in the left array is at most the middle element b_i and everything in the right is at least the middle element. You're allowed to merge the small halves of A,B and the big halves of A,B completely independently, and since you know the lengths of all the constituent parts the two processes you farm that out to don't even have to coordinate on which sections of a buffer to overwrite.
+
+The split process in the worst-case can reduce the problem into (1/2) and (3/2) sized chunks (if one array is completely smaller than the other). At each level (working down to 1 level total at the end), one process generates the set of tasks of splitting up the current level, and processors pop those off the queue to push a set of split merges back onto a work queue, and when that work queue is empty the entire level has been merged (and is half the chunk count from before). Iterate till the whole array is sorted.
+
+This would be leaps and bounds easier to implement with async in the language, but that's currently not a part of Zig-0.11 (or -0.12-dev), so I'm going to defer this problem to some point in the future. I plan to write a database one of these days, and the nitty gritty of high-performance parallel simd alpha beta gamma rockstar joins will probably be a big part of that.
