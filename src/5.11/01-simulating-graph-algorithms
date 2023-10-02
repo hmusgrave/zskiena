@@ -1,0 +1,19 @@
+5-1
+===
+(a) (G1) ABDICEGJFH
+    (G2) ABECFIDGJMHKNLOP
+(b) (G1) ABDECFHGIJ
+    (G2) ABCDHGFEIJKLPONM
+
+5-2
+===
+Is the problem buggy? There's a cycle in GFH, so the best we could hope for is a topological sort ignoring the cycle. Or else, is the problem asking what happens when we do a DFS in the toposort fashion the problem asked for?
+
+A
+B
+D
+E
+C
+FGH
+I
+J

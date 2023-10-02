@@ -1,0 +1,21 @@
+5-1
+===
+There are tons of ways to solve this. An easy one is DFS, assigning alternating colors to each node, and examining any back-links you uncover to ensure that coloring is consistent.
+
+5-2
+===
+The possible wheel turns define an implicit graph (with banned configurations severing some edges). BFS to find the shortest allowed path.
+
+5-3
+===
+BFS solves this pretty easily too. Much how previously in this chapter we added to each node the path count to reach it (and merged competing ancestors in a given time step via addition), this time we'll keep track of the minimum capacity along any ancestor path (and merge competing ancestors via the max function). Once we hit the target city (if we hit it?), the minimum capacity we found determines the minimum trip count via integer ceiling division.
+
+5-4
+===
+Conceptually this isn't challenging. Much like 5-3, a lightly modified BFS does the trick. The first work queue should consist of every word without an ancestor, initialized to a max_path_length of 1. When you find nodes again, update their max_path_length if you've gotten there through some more circuitous route, keeping track of a running maximum (which you'll return once the search terminates).
+
+The challenge, perhaps, is in quickly computing neighbors. The input is only 25k words, so you could explicitly handle every posisble edge in just 625M steps to construct an adjacency list. I think a trie with wildcards is probably good enough though. With only 26 characters you can explicitly filter the returned options for those which are lexicographically greater (or you could let the trie nodes be sorted).
+
+5-5
+===
+This is another longest path problem (like 5-4). Make two copies of the cubes. Sort one by the bottom face color and then the weight, and the other by the top face color and then the weight. Then the adjacency list is trivial to uncover on the fly.

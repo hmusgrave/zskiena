@@ -1,0 +1,88 @@
+5-12
+====
+List:
+  for each node u
+    for each neighbor v := n(u)
+      for each neighbor w := n(v)
+        add (u,v) to your square adjacency list (de-duping on the way)
+
+Matrix:
+  You can square the matrix to get the total 2-hop path count between two nodes
+  and then collapse any postive value back down to a 1 (minor optimization, just
+  use "or" as your addition routine in the matmul rather than "add").
+
+  That's not very efficient though unless somebody finally makes an O(n^2) matmul
+  routine. You can build in adjacency list from a matrix in O(n^2) and then proceed
+  as above. 
+
+5-13
+====
+(a) The basic idea is to start outward (at the leaves) and move inward. Don't keep any leaves, do keep the next level, don't keep the following, and so on. The only complicating factor is that when you get to the final level, if it has k equal to 1 or 2 nodes, only keep k-1 of them in the cover (the choice of which node doesn't matter).
+
+One way to think about this is that for any edge attached to a leaf, you either have to include the leaf node or its neighbor. If you choose the leaf you definitely don't eliminate other edges, and if you include its neighbor you might eliminate other edges, so an optimal choice is choosing all the non-leaf leaf neighbors (with the complicating factor that in a tree of size 2 you can have two leaves adjacent to each other and only need to pick one to satisfy that edge). After having added those leaf-neighbors to the cover, if you haven't finished then you need to do more work somewhere. Note that the partial cover you've found so far when combined with any minimal cover for the sub-tree obtained by deleting all leaves and all leaf-neighbors is a minimal cover for the whole tree. The iterative algorithm described above is just a description of this recursive observation.
+
+(b) The weight of a vertex cover is exactly equal to the edge count (constant) plus the number of edges covered by 2 nodes (not constant), so our goal is equivalent to minimizing duplicate coverage.
+
+The algorithm proceeds similarly to (a), except you'll keep the leaves and not the next level, keep the third, not the 4th, .... There is no duplication (if you terminate at 2 nodes, just pick one), yielding a cover of weight E.
+
+(c) We'll define some mutually recursive utility function (function ideas, we never call them explicitly).
+
+min_cover(rooted_subtree) -> {cover, weight}:
+Root the tree, and start at the root. You either require the root to be in the cover or all its children. The first option is just a call to min_cover_using_root on yourself, and the second sums min_cover_using_root on all your children.
+
+min_cover_using_root(rooted_subtree) -> {cover, weight}:
+Since you include the root you don't _have_ to include any of the subtree roots. The cover you return is the root node plus the union of all the min_cover(child_subtree) covers. Sum their weights and add to your weight.
+
+Then the function we'll actually execute computes both min_cover and min_cover_using_root at each level, avoiding a combinatorial explosion of scheduled work (both will be computed in O(1) on the leaves, then those cached values will be used to do O(leaf-count-per-parent) work the next level up, ...). Then we return the min_cover out of the {min_cover, min_cover_using_root} that we extracted using the paired up call just described.
+
+As an implementation detail, rather than explicitly rooting the tree you can get a similar effect by picking a "root" node, examining all neighbors, and passing that one back-edge to the neighbor as the one edge it's not allowed to traverse when it recursively examines its children.
+
+5-14
+====
+Suppose that G is connected or that you do DFS on all the components (otherwise you have trivial counter-examples like 4 nodes arranged in two sets of 2-element linked lists). The only edges which might be missed from that hypothetical cover are those between two leaves (since DFS finds all nodes, all edges are attached to one of those nodes and nothing else, and the only nodes we removed were the leaves, so any edge between a leaf and another non-leaf node is covered by that other node). That's impossible though because it means that there exist two connected leaves A and B such that DFS found (without loss of generality) B in one branch, examined the edge to A, and chose not to visit A because A was already visited, but that would mean that when we visited A we _definitely_ had not visited B yet, so we would have found B in that particular descent from A.
+
+Hence, the leaf-deleted DFS tree does form a vertex cover (with the aforementioned connection restriction).
+
+5-15
+====
+This is just the two-coloring problem. Bipartite graphs have independent covers, and other graphs don't.
+
+5-16
+====
+(a) Apply the vertex cover from 5-13(b).
+
+(b) Apply the vertex cover from 5-13(a).
+
+(c) Repeat as in 5-13(c), but instead use the max_set_using_root and max_set_not_using_root subroutines. To avoid duplicated edges you have to keep track of whether a given node is used or not.
+
+5-17
+====
+(a) For every triple of vertices, check to see if all three triangular edges exist.
+
+(b) For every vertex v, for each neighbor u of v, check to see if any of u's neighbors are neighbors of v. If so, you found a triangle. If not, v is not part of a triangle.
+
+5-18
+====
+There is not necessarily a schedule where each movie is shown at most once. Consider customers wanting to see movies (A,X), (A,Y), and (X,Y).
+
+If you view the movies as a graph connected by customers, you can schedule without duplicates iff the graph has a 2-coloring. Use the halves of the bipartite graph to inform the schedule (one chunk Saturday, one chunk Sunday).
+
+In general, find any minimal coloring. Place half the colors on Sat and half on Sun.
+
+5-19
+====
+Start with a queue of leaves. Find all neighbors you haven't seen before. Proceed inward. Eventually you'll find either 1 or 2 nodes on the "inside". The edge-count on the longest path is twice the number of hops you've done so far (leaves to leaf-neighbors is a hop, leaf-1-neighbors to leaf-2-neighbors is a hop, ...), plus another 1 if the last step has 2 nodes (to account for the edge between them).
+
+Correctness is almost obvious. Runtime is O(n) (with a bit of nuance in how you keep track of the set of seen nodes and whatnot).
+
+5-20
+====
+Conceptually, all we want to do is remove degree<k vertices till there are no such vertices remaining. If you start by storing vertices in one of two buckets (too small or big enough), and every time you delete one of the too-small vertices you examine its neighbors, decrement their degree, and move to the small bucket if the degree is sufficiently reduced, you hit the desired performance characteristics.
+
+5-21
+====
+We'll do something of an augmented BFS from v to w, where in addition to uncovering a node we also store how many different paths lead up to it in that particular BFS time step. Vertex v starts with 1 way, and then newly discovered nodes are assigned the sum of the path counts for all vertices in the previous time step's queue with the newly discovered node as a target. The time step that finds w (if any) will fill w with the desired return value, or else there are 0 options. Store the BFS tree instead to be able to walk all the shortest paths.
+
+5-22
+====
+Operate similarly to 5-20. Use 3 buckets (degree 2, degree !=2). On the initial walk initializing the buckets, don't add duplicate edges. While there are degree 2 vertices, make the appropriate connection, de-dup that edge, and delete the offending vertex.

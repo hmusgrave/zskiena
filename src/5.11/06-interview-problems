@@ -1,0 +1,7 @@
+5-31
+====
+Aside from the raw graph data structure (adjacency lists), both either use sets or dictionaries to keep track of discovered and processed nodes. BFS uses a queue to track unprocessed nodes, and DFS uses a stack (usually implicitly via recursion).
+
+5-32
+====
+A useful helper function returns a tuple of the number of elements in its subtree, along with the desired answer (null if not available in that subtree). From there, you can easily pass in that count information as an argument to different subtrees while traversing.

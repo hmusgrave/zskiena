@@ -1,0 +1,25 @@
+5-23
+====
+(a) Topological sort with cycle detection.
+
+(b) Assign any children with no hate constraints or no inbound hate constraints (only outward) to the lowest numbered row. Remove any constraints involving those children. Iterate on the remaining children/constraints till nobody remains, or till there exist constraints but no rootable vertex (not solvable).
+
+5-24
+====
+Adding a single directed edge to a directed graph can reduce the number of weakly connected components by at most 1. The strongly connected reduction can be unbounded though (imagine turning a singly linked list into a directed cycle, where you had n components and now have 1).
+
+5-25
+====
+Topologically sort, and there's an arborescence iff only 1 node has 0 inbound connections (and the sort finds no cycles).
+
+5-26
+====
+(a) BFS
+
+(b) Pick any node and perform BFS. While part of the graph remains, choose another node and do BFS (skipping nodes discovered previously in BFS, merging two root nodes into one if the new BFS discovers a previous root). If you have one root node at the end of this process, that is a mother vertex. Otherwise none exist.
+
+5-27
+====
+For n<3 vertices the problem is trivial. Inductively, consider an n+1 element tournament T. Let u be some node in T and H be a Hamiltonian path in T-u with head h1 and tail hn. If u->h1 then the problem is solved. Otherwise, h1->u. If u->h2 then splice together h1->u->h2->H[3..]. Otherwise we also have h2->u. Iterate through H similarly to either find a Hamiltonian path for T or to conclude that h1->u, h2->u, h3->u, .... In that last case, form the path H[1..n]->u.
+
+That proof sketch is constructive (and so suffices as an algorithm), but it doesn't seem very efficient. It's O(n^2). The problem didn't ask about efficiency per se. There are lots of tournaments, so basic information theory posits we can't solve it in O(n), but maybe there's something reasonable in between?

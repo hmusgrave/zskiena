@@ -1,0 +1,12 @@
+5-28
+====
+Any leaf in a DFS tree is safe to delete.
+
+5-29
+====
+Do a postorder traversal of any DFS tree.
+
+5-30
+====
+Let u and v be vertices on opposite sides of the bridge (elements of the connected components left behind when the bridge is removed). Note that every path from u to v must contain the bridge e (or else on removal of just e, u and v would still be connected by that path and hence not from distinct connected components). Since DFS iteratively builds a tree connecting every node, the DFS tree does have a path from u to v. All such paths contain e.
+QED

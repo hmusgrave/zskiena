@@ -1,0 +1,85 @@
+5-3
+===
+I suppose it depends on your definition? Trees were defined in this book to be connected, acyclic undirected graphs. Connected means there is a path, so I suppose we're just meant to prove that being acyclic means you can't have multiple paths?
+
+What we'll prove instead is that any undirected graph with multiple distinct paths between two distinct nodes has a cycle.
+
+In the base case, note that for n<2 the problem is trivial (there are no pairs of nodes).
+
+Otherwise, let G be a graph with n+1 vertices. Let P!=Q be paths between x!=y.
+
+If P and Q agree at some point z not in {x,y} then consider the labelings
+P := {x,p1,...,pk,z,p(k+2),...,pn,y},
+Q := {x,q1,...,qj,z,q(j+2),...,qm,y}.
+
+We can always consider paths to have no duplicate nodes (if there were a section ...,w,...,w,... you coul delete everything between and up through one of the two ws and still have a path). If after such a duplication procedure we always have P==Q then the theorem is proven. Otherwise, you have distinct P!=Q with no duplicate nodes.
+
+Operating on the subgraph with y deleted, note that the heads of P and Q are paths between x and z. If those are distinct paths then applying the inductive hypothesis we have a cycle and are finished. If not, since P!=Q we necessarily have distinct paths by deleting x instead of y and considering the paths between z and y. Applying the inductive hypothesis there must be a cycle.
+
+The desired path uniqueness then follows from acylicity (if there were distinct paths, the tree would have a cycle).
+
+5-4
+===
+We'll work at a fairly high level. Consider any edge e := (u,v) processed by a BFS search. e cannot be a forward or backward edge because that means:
+(1) v was undiscovered, and
+(2) there exists w adjacent to both u and v, and
+(3) we found w in a previous time step, and
+(4) v is adjacent to u.
+
+Backward edges were ruled out by (1) (since the edge u->w was formed at a previous time step, so u was discovered no later than 2 time steps ago), and forward edges are also ruled out by (1) (since we would have discovered v the same time step where we discovered w).
+
+5-5
+===
+Such graphs definitely don't have to be bipartite (consider a triangle). For an algorithm though, note that such a graph is necessarily a collection of disconnected linked lists (subsuming naked vertices as well) and cycles:
+
+In the base case, empty graphs and naked points trivially work. Inductively, consider a graph with n+1 vertices satisfying the condition. Necessarily, any n-vertex subgraph also satisfies it, pick a node z and consider the subgraph G-z. It consists of disconnected linked lists and cycles. If z has any edges in the full graph, where are they? Non-trivial cycles (those which aren't also linked lists) have every vertex having two neighbors, so they don't have room for z. Similarly with any interior node in the existing linked lists, so z can only be by itself (a 1-node list), or connect to the ends of an existing linked list. If it connects to one end then the structure remains a list. Otherwise, if it connects to both ends, it forms a cycle.
+
+This suggests a fairly fast algorithm. Pick 3 colors ahead of time. For each connected component, pick a vertex. Assign it color 0. Pick a neighbor (if there are any), and assign it color 1. Iterate till you terminate (in which case, proceed from the other direction of the starting node and finish coloring the list the same way), or you hit the root node. If the second-to-last node in a cycle has the same color as the root, color it with color 2 instead.
+
+5-6
+===
+(a) v should be connected to each of the other n-1 vertices.
+
+(b) v should be the head of a linked list.
+
+(c) Combine (a) and (b). v should be the head of an n/2 linked-list, the tail of which fans out to n/2 nodes.
+
+5-7
+===
+Duplicates cause a problem. The tree rooted at 0 and with a left child of 0 is indistinguishable for all three traversals as the same tree with a right child of 0 instead.
+
+Assuming no duplicates, an inorder traversal implicitly defines a sort order on the nodes. Assume we're dealing with a tree of at least 2 elements (or else the problem is trivial).
+- There is some last node u in the preorder
+- That node has a parent v (since the root is first and we have >1 node)
+- There is some second-to-last node w in the pre-order (might be root, v, ...)
+- If w>u then w=v and w.left=u
+- Otherwise, if w<u then v.right=u
+- Moreover, v is the greatest element less than u, which we can find via the implicit sort
+
+In either case, we know how to connect u to its parent. Iterate till one node remains to uncover every edge in the tree.
+
+For the preorder/postorder case we are hosed again for the same reason as in the 0<->0 example we used to demonstrate problems with duplicates. Suppose you have two nodes 1 and 2, with 1 the root. The preorder and postorder traversals can't distinguish whether 2 is a left or right child.
+
+5-8
+===
+(a) Scan the adjacency matrix in O(n^2), building up the adjacency lists with a constant operation per edge.
+
+(b) Initialize the incidence matrix in O(mn) time. Scan the adjacency lists to populate the matrix with any 1 values.
+
+(c) Scan the incidence matrix in O(mn) time. Each column has 0 or 2 elements in it for simple graphs. If ti has two, add appropriate edges in your dictionary of adjacency lists.
+
+5-9
+===
+Do a post-order traversal on the graph, applying operations to the fully resolved child values.
+
+5-10
+====
+Same idea, but use a topological sort for execution order (the post-order traversal is a topological sort on a tree).
+
+5-11
+====
+Choose any worst-case O(1) data structure to support dictionary semantics on a sequence of integer keys (a neat trick appeared earlier in this book based on uninitialized memory, and you could tack on a data array without issue). Use this, along with an O(1) dictionary (like an array indexed by node id) to form an adjacency list in O(n) worst-case.
+
+From there, iterate through the triangles again, storing (and updating) a pair of initially null triangles (note that an edge is shared by at most two triangles) in the data region of each edge.
+
+At that point you're nearly done. Iterate through the list of dual graph edges (the old graph edges, along with their two triangles; skip if there are fewer than 2) and build the new graph.
